@@ -1,0 +1,47 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+[Ll]ogs/
+
+# NuGet Packages
+*.nupkg
+packages/
+.nuget/
+
+# ASP.NET Core temp files
+Properties/launchSettings.json
+
+# Prevent sensitive config from being committed
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json
+appsettings.*.json
+
+# IIS
+*.vspscc
+*.vssscc
+_IISExpress/
+*.dbmdl
+
+# Publish
+wwwroot/
+publish/
+dist/
+
+# JetBrains Rider
+.idea/
+*.DotSettings.user
+
+# Others
+*.cache
+*.log
+*.tmp
