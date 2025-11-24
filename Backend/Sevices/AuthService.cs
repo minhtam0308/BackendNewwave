@@ -15,7 +15,7 @@ namespace Backend.Sevices
 {
     public class AuthService(AppDbContext context, IConfiguration configuration) : IAuthService
     {
-        public async Task<TokenResponseDto?> LoginAsyn(UserDto request)
+        public async Task<TokenResponseDto?> LoginAsyn(UserLoginDto request)
         {
             var user = await context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
             if (user is null)
@@ -101,6 +101,7 @@ namespace Backend.Sevices
         public async Task<TokenResponseDto?> RefreshTokenAsyn(RefreshTokenRequest request)
         {
             var user = await context.Users.FirstOrDefaultAsync(u => u.Id == request.UserId);
+            //Log.Information("user {user}", user.Name);
             if (user is null || user.RefreshTokeExpiryTime < DateTime.UtcNow || user.RefreshToken != request.RefreshToken)
             {
                 return null;

@@ -9,7 +9,6 @@ namespace Backend.Entitise
         // Thêm khóa phụ kiểu Guid
         public Guid IdAuthor { get; set; }
 
-        // Navigation property (đặt tên khác cho rõ ràng)
         public Author? Author { get; set; }
 
         public string? Description { get; set; }
@@ -17,7 +16,7 @@ namespace Backend.Entitise
         public int TotalCopies { get; set; }       // Tổng số sách
         public int AvailableCopies { get; set; }   // Số sách còn lại
 
-        public byte[]? Image { get; set; }      // Ảnh bìa
+        public byte[]? ImageBook { get; set; }      // Ảnh bìa
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }

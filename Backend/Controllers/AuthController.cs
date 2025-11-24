@@ -34,11 +34,11 @@ namespace Backend.Controllers
 
 
         [HttpPost("login")]
-        public async Task<ActionResult<TokenResponseDto>> Login(UserDto request)
+        public async Task<ActionResult<TokenResponseDto>> Login(UserLoginDto request)
         {
             var result = await authService.LoginAsyn(request);
             if (result == null) {
-                return Unauthorized("Invalid email or password");
+                return BadRequest("Invalid email or password");
             }
             return Ok(result);
         }

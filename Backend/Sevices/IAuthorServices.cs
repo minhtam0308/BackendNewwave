@@ -7,5 +7,7 @@ namespace Backend.Sevices
     {
         Task<string?> PostAuthor(string name);
         Task<List<Author>> getAllAuthor();
+        Task<string?> PutAuthor(AuthorRenameRequest author);
+        Task<string?> DeleteAuthor(Guid id);
     }
 }

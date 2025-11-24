@@ -19,7 +19,7 @@ namespace Backend.Sevices
                 Description = b.Description,
                 TotalCopies = b.TotalCopies,
                 AvailableCopies = b.AvailableCopies,
-                Image = b.Image,
+                Image = b.ImageBook,
                 IdAuthor = b.IdAuthor,
                 CreatedAt = b.CreatedAt
             }).ToListAsync();
