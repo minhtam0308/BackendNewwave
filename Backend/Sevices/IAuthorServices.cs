@@ -5,9 +5,9 @@ namespace Backend.Sevices
 {
     public interface IAuthorServices
     {
-        Task<string?> PostAuthor(string name);
+        Task<int?> PostAuthor(string name);
         Task<List<Author>> getAllAuthor();
-        Task<string?> PutAuthor(AuthorRenameRequest author);
-        Task<string?> DeleteAuthor(Guid id);
+        Task<int?> PutAuthor(AuthorRenameRequest author);
+        Task<int?> DeleteAuthor(Guid id);
     }
 }

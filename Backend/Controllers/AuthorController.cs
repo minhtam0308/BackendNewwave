@@ -13,14 +13,29 @@ namespace Backend.Controllers
     {
         [Authorize(Roles = "admin")]
         [HttpPost("postCreateAuthor")]
-        public async Task<ActionResult<string>> PostCreateAuthor(string? name)
+        public async Task<ActionResult> PostCreateAuthor(string? name)
         {
             if(name == null)
             {
-                return BadRequest("Provide Name");
+                return Ok(new
+                {
+                    EC = 2,
+                    EM = "Provide Name"
+                });
             }
             var result = await authorServices.PostAuthor(name);
-            return Ok(result);
+            if(result == 0)
+            {
+                return Ok(new {
+                EC = 0,
+                EM = "Create success"
+                });
+            }
+            return Ok(new
+            {
+                EC = 1,
+                EM = "Error from BE"
+            });
         }
 
         [Authorize(Roles = "admin")]
@@ -34,26 +49,62 @@ namespace Backend.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpPut("putEditAuthor")]
-        public async Task<ActionResult<string>> PutEditAuthor([FromBody] AuthorRenameRequest author)
+        public async Task<ActionResult> PutEditAuthor([FromBody] AuthorRenameRequest author)
         {
-            var result = await authorServices.PutAuthor(author);
-            if(result is null)
+            if(author is null)
             {
-                return BadRequest("Author is not exist");
+                return Ok(new
+                {
+                    EC = 3,
+                    EM = "Author is undefined"
+                });
             }
-            return Ok(result);
+
+                var result = await authorServices.PutAuthor(author);
+                if (result == 2) 
+                return Ok(new
+                    {
+                        EC = 2,
+                        EM = "Author is not exist"
+                    });
+                
+                if(result == 0) 
+                return Ok(new{
+                    EC = 0,
+                    EM = "Edit success"
+                });
+                return Ok(new
+                {
+                    EC = 1,
+                    EM = "Error from BE"
+                });
+
         }
 
         [Authorize(Roles = "admin")]
         [HttpDelete("deleteAuthor")]
-        public async Task<ActionResult<string>> DeleteAuthor(Guid idAuthor)
+        public async Task<ActionResult> DeleteAuthor(Guid idAuthor)
         {
             var result = await authorServices.DeleteAuthor(idAuthor);
-            if (result is null)
+            if (result == 2)
             {
-                return BadRequest("Author is not exist");
+                return Ok(new
+                {
+                    EC = 2,
+                    EM = "Author is not exist"
+                });
             }
-            return Ok(result);
+            if(result == 0)
+                return Ok(new
+                {
+                    EC = 0,
+                    EM = "Delete success"
+                });
+            return Ok(new
+            {
+                EC = 1,
+                EM = "Error from BE"
+            });
         }
 
     }

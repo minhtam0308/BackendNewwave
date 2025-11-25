@@ -1,7 +1,9 @@
 ﻿using Backend.Data;
+using Backend.Entitise;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace Backend.Sevices
 {
@@ -19,7 +21,7 @@ namespace Backend.Sevices
                 Description = b.Description,
                 TotalCopies = b.TotalCopies,
                 AvailableCopies = b.AvailableCopies,
-                Image = b.ImageBook,
+                Image = b.UrlBook,
                 IdAuthor = b.IdAuthor,
                 CreatedAt = b.CreatedAt
             }).ToListAsync();
@@ -30,9 +32,31 @@ namespace Backend.Sevices
             return books;
         }
 
-        public Task<string> PostCreateBook()
+
+        public async Task<int> PostCreateBook(BookRequest request)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var bookNew = new Book()
+                {
+                    Title = request.Title,
+                    IdAuthor = request.IdAuthor,
+                    Description = request.Description,
+                    AvailableCopies = request.TotalCopies,
+                    TotalCopies = request.TotalCopies,
+                    UrlBook = request.UrlBook
+                };
+                context.Books.Add(bookNew);
+                await context.SaveChangesAsync();
+                return 0;
+            }
+            catch (Exception ex) {
+                Log.Information("Error PutAuthor {t}", ex);
+
+                return 1;
+            }
+
+
         }
     }
 }

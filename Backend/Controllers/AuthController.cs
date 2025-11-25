@@ -49,7 +49,11 @@ namespace Backend.Controllers
             var result = await authService.RefreshTokenAsyn(request);
             if(result is null)
             {
-                return BadRequest("Need to login");
+                return Ok(new
+                {
+                    EC = 2,
+                    EM = "Refresh token is wrong"
+                });
             }
             
             return Ok(result);

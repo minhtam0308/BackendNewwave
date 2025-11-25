@@ -10,16 +10,25 @@ namespace Backend.Sevices
 {
     public class AuthorServices(AppDbContext context) : IAuthorServices
     {
-        public async Task<string?> DeleteAuthor(Guid id)
+        public async Task<int?> DeleteAuthor(Guid id)
         {
-            var oldAuhtor = await context.Authors.FirstOrDefaultAsync(a => a.Id == id);
-            if (oldAuhtor == null)
+            try
             {
-                return null;
+                var oldAuhtor = await context.Authors.FirstOrDefaultAsync(a => a.Id == id);
+                if (oldAuhtor == null)
+                {
+                    return 2;
+                }
+                context.Remove(oldAuhtor);
+                context.SaveChanges();
+                return 0;
             }
-            context.Remove(oldAuhtor);
-            context.SaveChanges();
-            return "Delete success";
+            catch (Exception ex)
+            {
+                Log.Information("Error DeleteAuthor {t}", ex);
+                return 1;
+            }
+
         }
 
         public async Task<List<Author>> getAllAuthor()
@@ -28,26 +37,43 @@ namespace Backend.Sevices
             return listAuthor;
         }
 
-        public async Task<string?> PostAuthor( string name )
+        public async Task<int?> PostAuthor( string name )
         {
-            Author newAuthor = new Author() { NameAuthor = name};
-            await context.Authors.AddAsync(newAuthor);
-            var test = await context.SaveChangesAsync();
+            try
+            {
+                Author newAuthor = new Author() { NameAuthor = name };
+                await context.Authors.AddAsync(newAuthor);
+                var test = await context.SaveChangesAsync();
 
-            //Log.Information("test {t}", test);
-            return "Create success";
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Information("Error PostAuthor {t}", ex);
+                return 1;
+            }
+
         }
 
-        public async Task<string?> PutAuthor(AuthorRenameRequest author)
+        public async Task<int?> PutAuthor(AuthorRenameRequest author)
         {
-            var oldAuhtor = await context.Authors.FirstOrDefaultAsync(a => a.Id == author.Id);
-            if (oldAuhtor == null)
+            try
             {
-                return null;
+                var oldAuhtor = await context.Authors.FirstOrDefaultAsync(a => a.Id == author.Id);
+                if (oldAuhtor is null)
+                {
+                    return 2;
+                }
+                oldAuhtor.NameAuthor = author.NameAuthor;
+                await context.SaveChangesAsync();
+                return 0;
             }
-            oldAuhtor.NameAuthor = author.NameAuthor;
-            await context.SaveChangesAsync();
-            return "Edit success";
+            catch (Exception ex)
+            {
+                Log.Information("Error PutAuthor {t}", ex);
+                return 1;
+            }
+
         }
     }
 }

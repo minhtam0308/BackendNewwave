@@ -13,7 +13,7 @@ namespace Backend.Models
         public int TotalCopies { get; set; }       // Tổng số sách
         public int AvailableCopies { get; set; }   // Số sách còn lại
 
-        public byte[]? Image { get; set; }      // Ảnh bìa
+        public string? Image { get; set; }      // Ảnh bìa
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
