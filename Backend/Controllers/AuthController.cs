@@ -17,7 +17,7 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(IAuthService authService) : ControllerBase
+    public class AuthController(IAuthService authService, IConfiguration configuration) : ControllerBase
     {
        
         [HttpPost("register")]
@@ -38,9 +38,34 @@ namespace Backend.Controllers
         {
             var result = await authService.LoginAsyn(request);
             if (result == null) {
-                return BadRequest("Invalid email or password");
+                return Ok(new
+                {
+                    EC = 2,
+                    EM = "Email or password is invalied"
+                });
             }
-            return Ok(result);
+            Response.Cookies.Append("refreshToken", result.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false,
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddDays(configuration.GetValue<int>("appsetting:timeResfreshTokenExpire"))
+            });
+
+            // 6. Lưu userId vào cookies
+            Response.Cookies.Append("userId", result.User.Id.ToString(), new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false,
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddDays(configuration.GetValue<int>("appsetting:timeResfreshTokenExpire"))
+            });
+            return Ok(new
+            {
+                EC = 0,
+                EM = result.AccessToken,
+                user = result.User
+            });
         }
 
         [HttpPost("refresh-token")]

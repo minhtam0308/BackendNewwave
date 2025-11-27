@@ -40,11 +40,14 @@ namespace Backend.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpGet("getAllAuthor")]
-        public async Task<ActionResult<List<Author>>> GetAllAuthor()
+        public async Task<ActionResult> GetAllAuthor()
         {
             var result = await authorServices.getAllAuthor();
             
-            return Ok(result);
+            return Ok(new {
+                EC = 0,
+                EM = result
+            });
         }
 
         [Authorize(Roles = "admin")]

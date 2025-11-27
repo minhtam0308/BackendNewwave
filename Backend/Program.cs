@@ -45,9 +45,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "AllowAll",
     poli => poli
-        .AllowAnyOrigin()
+        .WithOrigins("http://localhost:3000")
         .AllowAnyMethod()
-        .AllowAnyHeader());
+        .AllowAnyHeader()
+        .AllowCredentials()); //cookie need this
 });
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()

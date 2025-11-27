@@ -7,6 +7,8 @@ namespace Backend.Sevices
     {
         Task<List<BookResponse>?> GetAllBook();
         Task<int> PostCreateBook(BookRequest request);
+        Task<int> PutBook(Book request);
+        Task<int> DelBook(Guid idBook);
 
     }
 }

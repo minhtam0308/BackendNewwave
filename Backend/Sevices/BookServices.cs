@@ -1,5 +1,7 @@
-﻿using Backend.Data;
+﻿using Azure.Core;
+using Backend.Data;
 using Backend.Entitise;
+using Backend.Migrations.ImageDB;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +11,28 @@ namespace Backend.Sevices
 {
     public class BookServices(AppDbContext context) : IBookServices
     {
+        public async Task<int> DelBook(Guid idBook)
+        {
+            try
+            {
+                var bookDel = context.Books.FirstOrDefault(b => b.Id == idBook);
+                if (bookDel == null)
+                {
+                    return 2;
+                }
+                context.Books.Remove(bookDel);
+                await context.SaveChangesAsync();
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Information("Error PutBook {t}", ex);
+
+                return 1;
+            }
+
+        }
+
         public async Task<List<BookResponse>?> GetAllBook()
         {
             var books = await context.Books
@@ -21,11 +45,12 @@ namespace Backend.Sevices
                 Description = b.Description,
                 TotalCopies = b.TotalCopies,
                 AvailableCopies = b.AvailableCopies,
-                Image = b.UrlBook,
+                UrlBook = b.UrlBook,
                 IdAuthor = b.IdAuthor,
                 CreatedAt = b.CreatedAt
             }).ToListAsync();
-            if(books.Count == 0)
+
+            if (books.Count == 0)
             {
                 return null;
             }
@@ -51,7 +76,34 @@ namespace Backend.Sevices
                 return 0;
             }
             catch (Exception ex) {
-                Log.Information("Error PutAuthor {t}", ex);
+                Log.Information("Error PostCreateBook {t}", ex);
+
+                return 1;
+            }
+
+
+        }
+
+        public async Task<int> PutBook(Book request)
+        {
+            try
+            {
+                var bookEdit = context.Books.FirstOrDefault(b => b.Id == request.Id);
+                if (bookEdit == null) {
+                    return 2;
+                }
+                bookEdit.Title = request.Title;
+                bookEdit.IdAuthor = request.IdAuthor;
+                bookEdit.Description = request.Description;
+                bookEdit.AvailableCopies = request.AvailableCopies;
+                bookEdit.TotalCopies = request.TotalCopies;
+                bookEdit.UrlBook = request.UrlBook;
+                await context.SaveChangesAsync();
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Information("Error PutBook {t}", ex);
 
                 return 1;
             }
