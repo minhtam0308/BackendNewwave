@@ -13,7 +13,7 @@ namespace Backend.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // 👉 Đặt đoạn này ở đây
+            
 
             modelBuilder.Entity<Book>()
                 .HasOne(b => b.Author)

@@ -8,6 +8,7 @@
         public string PasswordHash { get; set; } = String.Empty;
         public string Role { get; set; } = "user";
         public string? RefreshToken {  get; set; }
+        public string? urlUserImage { get; set; } = "258d5e1a-ff57-4092-2a5d-08de2e43c05d";
         public DateTime? RefreshTokeExpiryTime { get; set; }
     }
 }

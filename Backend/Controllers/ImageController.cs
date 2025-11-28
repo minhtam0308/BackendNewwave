@@ -10,7 +10,7 @@ namespace Backend.Controllers
     [ApiController]
     public class ImageController(IImageServices imageServices) : ControllerBase
     {
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, user")]
         [HttpPost("postCreateImage")]
         public async Task<ActionResult> PostCreateImage(IFormFile file)
         {

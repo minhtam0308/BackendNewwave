@@ -4,6 +4,7 @@ using Backend.Entitise;
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Backend.Sevices
 {
@@ -85,5 +86,23 @@ namespace Backend.Sevices
             }
         }
 
+        public async Task<byte[]?> GetImageGeneral()
+        {
+            try
+            {
+                var image = await context.BookImages
+                          .FirstOrDefaultAsync(x => x.Id == Guid.Parse("258d5e1a-ff57-4092-2a5d-08de2e43c05d"));
+                if (image == null)
+                {
+                    return null;
+                }
+                return image.image;
+            }
+            catch (Exception ex)
+            {
+                Log.Information("Error GetBookImage {t}", ex);
+                return null;
+            }
+        }
     }
 }

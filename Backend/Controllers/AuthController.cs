@@ -26,9 +26,16 @@ namespace Backend.Controllers
             var user = await authService.RegisterAsyn(request);
             if(user == null)
             {
-                return BadRequest("Email has already exist");
+                return Ok(new {
+                EC = 2,
+                EM = "Account is exist"
+                });
             }
-            return Ok("Sign up success");
+            return Ok(new
+            {
+                EC = 0,
+                EM = "Register success"
+            });
         }
 
 
@@ -47,7 +54,7 @@ namespace Backend.Controllers
             Response.Cookies.Append("refreshToken", result.RefreshToken, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false,
+                Secure = true,
                 SameSite = SameSiteMode.None,
                 Expires = DateTime.UtcNow.AddDays(configuration.GetValue<int>("appsetting:timeResfreshTokenExpire"))
             });
@@ -56,7 +63,7 @@ namespace Backend.Controllers
             Response.Cookies.Append("userId", result.User.Id.ToString(), new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false,
+                Secure = true,
                 SameSite = SameSiteMode.None,
                 Expires = DateTime.UtcNow.AddDays(configuration.GetValue<int>("appsetting:timeResfreshTokenExpire"))
             });
@@ -69,9 +76,26 @@ namespace Backend.Controllers
         }
 
         [HttpPost("refresh-token")]
-        public async Task<ActionResult<TokenResponseDto>> RefreshToken(RefreshTokenRequest request)
+        public async Task<ActionResult<TokenResponseDto>> RefreshToken()
         {
-            var result = await authService.RefreshTokenAsyn(request);
+            if (!Request.Cookies.TryGetValue("userId", out string? userId) || !Request.Cookies.TryGetValue("refreshToken", out string? refreshToken))
+            {
+                return Ok(new
+                {
+                    EC = 2,
+                    EM = Request.Cookies
+                });
+            }
+
+            if (!Guid.TryParse(userId, out var guidId))
+            {
+                return Ok(new
+                {
+                    EC = 2,
+                    EM = "Guid can not convert"
+                });
+            }
+            var result = await authService.RefreshTokenAsyn(new RefreshTokenRequest() { UserId = guidId, RefreshToken = refreshToken });
             if(result is null)
             {
                 return Ok(new
@@ -80,8 +104,30 @@ namespace Backend.Controllers
                     EM = "Refresh token is wrong"
                 });
             }
-            
-            return Ok(result);
+
+            Response.Cookies.Append("refreshToken", result.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddDays(configuration.GetValue<int>("appsetting:timeResfreshTokenExpire"))
+            });
+
+            // 6. Lưu userId vào cookies
+            Response.Cookies.Append("userId", result.User.Id.ToString(), new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddDays(configuration.GetValue<int>("appsetting:timeResfreshTokenExpire"))
+            });
+
+            return Ok(new
+            {
+                EC = 0,
+                EM = result.AccessToken,
+                user = result.User
+            });
         }
 
 
