@@ -9,5 +9,8 @@
         public required string urlUserImage { get; set; } = "258d5e1a-ff57-4092-2a5d-08de2e43c05d";
         public int? Age { get; set; } = null;
         public string? Location { get; set; } = string.Empty;
+        public string? Khoa { get; set; } = string.Empty;
+        public string? Lop { get; set; } = string.Empty;
+        public string? sdt { get; set; } = string.Empty;
     }
 }
