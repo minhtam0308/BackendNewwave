@@ -34,7 +34,15 @@ namespace Backend.Sevices
             {
                 AccessToken = CreateToken(user),
                 RefreshToken = await GenerateAndSaveRefreshTokenAsyn(user),
-                User = new UserResponse { Email = user.Email , Id=user.Id, Role= user.Role, Name=user.Name, urlUserImage = user.urlUserImage!}
+                User = new UserResponse { Email = user.Email , 
+                    Id=user.Id, 
+                    Role= user.Role, 
+                    Name=user.Name, 
+                    urlUserImage = user.urlUserImage!,
+                    Age = user.Age,
+                    Location = user.Location,
+                
+                }
             };
         }
 

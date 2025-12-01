@@ -145,5 +145,32 @@ namespace Backend.Controllers
             return Ok("you are admin");
         }
 
+        [HttpGet("logout")]
+        public async Task<ActionResult<TokenResponseDto>> Logout()
+        {
+
+            Response.Cookies.Append("refreshToken", "", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddDays(-1)
+            });
+
+            // 6. Lưu userId vào cookies
+            Response.Cookies.Append("userId", "", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddDays(-1)
+            });
+            return Ok(new
+            {
+                EC = 0,
+                EM = "You were logout"
+            });
+        }
+
     }
 }
