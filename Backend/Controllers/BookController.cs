@@ -23,6 +23,25 @@ namespace Backend.Controllers
             });
         }
 
+        [HttpGet("getPagedBook")]
+        public async Task<ActionResult> GetPagedBook([FromQuery]PaginationRequest request)
+        {
+            var inforPage = await bookServices.GetBookPaginate(request);
+            if(inforPage is null)
+            {
+                return Ok(new
+                {
+                    ec = 2,
+                    em = "Out of book"
+                });
+            }
+            return Ok(new
+            {
+                ec = 0,
+                em = inforPage
+            });
+        }
+
         [HttpPost("postCreateBook")]
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> PostCreateBook(BookRequest request)

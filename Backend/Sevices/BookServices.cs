@@ -57,6 +57,53 @@ namespace Backend.Sevices
             return books;
         }
 
+        public async Task<PagedResult?> GetBookPaginate(PaginationRequest paginationRequest)
+        {
+            try
+            {
+                var query = context.Books.AsQueryable();
+                var totalCount = await query.CountAsync();
+
+                if ((paginationRequest.PageNumber - 1) * paginationRequest.PageSize > totalCount)
+                {
+                    return null;
+                }
+                var items = await query
+                    .Select(b => new BookResponse
+                    {
+                        Id = b.Id,
+                        Title = b.Title,
+                        NameAuthor = b.Author!.NameAuthor,
+                        Description = b.Description,
+                        TotalCopies = b.TotalCopies,
+                        AvailableCopies = b.AvailableCopies,
+                        UrlBook = b.UrlBook,
+                        IdAuthor = b.IdAuthor,
+                        CreatedAt = b.CreatedAt
+                    })
+                    .OrderBy(x => x.Id)
+                    .Skip((paginationRequest.PageNumber - 1) * paginationRequest.PageSize)
+                    .Take(paginationRequest.PageSize)
+                    .ToListAsync();
+
+                var result = new PagedResult()
+                {
+                    Items = items,
+                    TotalCount = totalCount,
+                    PageNumber = paginationRequest.PageNumber,
+                    PageSize = paginationRequest.PageSize
+                };
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.Information("Error GetBookPaginate {t}", ex);
+
+                return null;
+            }
+
+        }
 
         public async Task<int> PostCreateBook(BookRequest request)
         {

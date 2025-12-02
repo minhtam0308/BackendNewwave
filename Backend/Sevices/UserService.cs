@@ -20,6 +20,9 @@ namespace Backend.Sevices
                 user.Name = request.Name;
                 user.Location = request.Location;
                 user.Age = request.Age;
+                user.Khoa = request.Khoa;
+                user.Lop = request.Lop;
+                user.sdt = request.sdt;
                 if (request.urlUserImage != null)
                 {
                     user.urlUserImage = request.urlUserImage;

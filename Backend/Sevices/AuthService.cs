@@ -41,7 +41,9 @@ namespace Backend.Sevices
                     urlUserImage = user.urlUserImage!,
                     Age = user.Age,
                     Location = user.Location,
-                
+                    Khoa = user.Khoa,
+                    Lop = user.Lop,
+                    sdt = user.sdt
                 }
             };
         }

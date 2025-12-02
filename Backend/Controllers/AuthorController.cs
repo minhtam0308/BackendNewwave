@@ -38,7 +38,7 @@ namespace Backend.Controllers
             });
         }
 
-        [Authorize(Roles = "admin")]
+
         [HttpGet("getAllAuthor")]
         public async Task<ActionResult> GetAllAuthor()
         {

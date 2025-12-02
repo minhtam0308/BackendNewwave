@@ -15,7 +15,7 @@ namespace Backend.Controllers
         [HttpPut("putChangeUser")]
         public async Task<ActionResult> PutChangUser(UserResponse request)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; 
             if(!Guid.TryParse(userId, out Guid userIdReuslt))
             {
                 return Ok(new
@@ -33,7 +33,10 @@ namespace Backend.Controllers
                 Location = request.Location,
                 Name = request.Name,
                 Role = request.Role,
-                urlUserImage = request.urlUserImage
+                urlUserImage = request.urlUserImage,
+                Khoa = request.Khoa,
+                Lop = request.Lop,
+                sdt = request.sdt
             };
             var resultChange = await userService.PutChangeUser(userRequest);
             if (resultChange == 1)
