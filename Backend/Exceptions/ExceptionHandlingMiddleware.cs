@@ -20,7 +20,7 @@ namespace Backend.Exceptions
         {
             try
             {
-                await _next(context);   // chạy request tiếp
+                await _next(context);  
             }
             catch (Exception ex)
             {

@@ -10,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Backend.Sevices
@@ -49,8 +50,12 @@ namespace Backend.Sevices
             };
         }
 
-        public async Task<User?> RegisterAsyn(UserDto request)
+        public async Task<int?> RegisterAsyn(UserDto request)
         {
+            if (!IsValidEmail(request.Email))
+            {
+                return 2;
+            }
             if (await context.Users.AnyAsync(u => u.Email == request.Email)) {
                 return null;
             }
@@ -61,7 +66,16 @@ namespace Backend.Sevices
             user.Name = request.Name;
             context.Users.Add(user);
             context.SaveChanges();
-            return user;
+            return 0;
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            var emailRegex = new Regex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+            return emailRegex.IsMatch(email);
         }
 
         private String CreateToken(User user)

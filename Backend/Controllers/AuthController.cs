@@ -24,6 +24,14 @@ namespace Backend.Controllers
         public async Task<ActionResult<string>> Register(UserDto request)
         {
             var user = await authService.RegisterAsyn(request);
+            if(user == 2)
+            {
+                return Ok(new
+                {
+                    EC = 2,
+                    EM = "Email was not validated!"
+                });
+            }
             if(user is null)
             {
                 return Ok(new {

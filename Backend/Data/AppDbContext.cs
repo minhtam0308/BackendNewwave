@@ -11,6 +11,8 @@ namespace Backend.Data
         public DbSet<Author> Authors { get; set; }
         public DbSet<Borrow> Borrows { get; set; }
         public DbSet<DetailBorrow> DetailBorrows { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartBook> CartBooks { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -43,9 +45,19 @@ namespace Backend.Data
                 .HasForeignKey(mt => mt.IdAdmin)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<CartBook>()
+                .HasOne(mt => mt.Cart)
+                .WithMany(u => u.cartBooks)
+                .HasForeignKey(mt => mt.IdCard)
+                .HasForeignKey(mt => mt.IdBook)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
             modelBuilder.Entity<Borrow>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Book>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<DetailBorrow>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Cart>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<CartBook>().HasQueryFilter(x => !x.IsDeleted);
 
         }
         public override int SaveChanges()
