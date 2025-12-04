@@ -1,5 +1,5 @@
-﻿using Backend.Models;
-using Backend.Sevices;
+﻿using Backend.Interface.Service;
+using Backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -34,9 +34,9 @@ namespace Backend.Controllers
                 Name = request.Name,
                 Role = request.Role,
                 urlUserImage = request.urlUserImage,
-                Khoa = request.Khoa,
-                Lop = request.Lop,
-                sdt = request.sdt
+                Department = request.Department,
+                Class = request.Class,
+                PhoneNumber = request.PhoneNumber
             };
             var resultChange = await userService.PutChangeUser(userRequest);
             if (resultChange == 1)

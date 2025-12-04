@@ -1,4 +1,4 @@
-﻿using Backend.Entitise;
+﻿using Backend.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Data
@@ -6,5 +6,32 @@ namespace Backend.Data
     public class ImageDBContext(DbContextOptions<ImageDBContext> options) : DbContext(options)
     {
         public DbSet<BookImage> BookImages { get; set; }
+        public override int SaveChanges()
+        {
+            foreach (var entry in ChangeTracker.Entries()
+                     .Where(e => e.State == EntityState.Deleted))
+            {
+                entry.State = EntityState.Modified;
+                entry.CurrentValues["IsDeleted"] = true;
+            }
+
+            return base.SaveChanges();
+        }
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            foreach (var entry in ChangeTracker.Entries()
+                         .Where(e => e.State == EntityState.Deleted))
+            {
+                entry.State = EntityState.Modified;
+                entry.CurrentValues["IsDeleted"] = true;
+            }
+            foreach (var entry in ChangeTracker.Entries()
+                 .Where(e => e.State == EntityState.Modified))
+            {
+                entry.CurrentValues["UpdatedAt"] = DateTime.UtcNow;
+            }
+
+            return await base.SaveChangesAsync(cancellationToken);
+        }
     }
 }

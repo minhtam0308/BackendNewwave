@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Backend.Entitise
+namespace Backend.Entities
 {
-    public class Author
+    public class Author : BaseEntity
     {
-        [Key]
-        public Guid Id { get; set; }
         public string? NameAuthor { get; set; }
         public List<Book> Books { get; set; } = new();
     }

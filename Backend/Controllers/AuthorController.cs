@@ -1,6 +1,6 @@
-﻿using Backend.Entitise;
+﻿using Backend.Entities;
+using Backend.Interface.Service;
 using Backend.Models;
-using Backend.Sevices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

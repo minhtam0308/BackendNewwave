@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Backend.Data;
-using Backend.Entitise;
+using Backend.Entities;
+using Backend.Interface.Service;
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Serilog;

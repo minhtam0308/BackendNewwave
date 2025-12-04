@@ -4,6 +4,7 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251203024345_addBaseClass")]
+    partial class addBaseClass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace Backend.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Backend.Entities.Author", b =>
+            modelBuilder.Entity("Backend.Entitise.Author", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -45,7 +48,7 @@ namespace Backend.Migrations
                     b.ToTable("Authors");
                 });
 
-            modelBuilder.Entity("Backend.Entities.Book", b =>
+            modelBuilder.Entity("Backend.Entitise.Book", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -86,49 +89,7 @@ namespace Backend.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("Backend.Entities.Borrow", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ExpiresBorrow")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ExpiresReturn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("IdAdmin")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("IdUser")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("RealTimeBorrow")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("RealTimeReturn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdAdmin");
-
-                    b.HasIndex("IdUser");
-
-                    b.ToTable("Borrows");
-                });
-
-            modelBuilder.Entity("Backend.Entities.DetailBorrow", b =>
+            modelBuilder.Entity("Backend.Entitise.ChiTietMuon", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -140,7 +101,7 @@ namespace Backend.Migrations
                     b.Property<Guid>("IdBook")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("IdBorrow")
+                    b.Property<Guid>("IdMuonTra")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
@@ -151,12 +112,54 @@ namespace Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdBorrow");
+                    b.HasIndex("IdMuonTra");
 
-                    b.ToTable("DetailBorrows");
+                    b.ToTable("ChiTietMuons");
                 });
 
-            modelBuilder.Entity("Backend.Entities.User", b =>
+            modelBuilder.Entity("Backend.Entitise.MuonTra", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("IdAdmin")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("IdUser")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("hanDenMuon")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("hanDenTra")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ngayMuon")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ngayTra")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdAdmin");
+
+                    b.HasIndex("IdUser");
+
+                    b.ToTable("MuonTras");
+                });
+
+            modelBuilder.Entity("Backend.Entitise.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -165,14 +168,8 @@ namespace Backend.Migrations
                     b.Property<int?>("Age")
                         .HasColumnType("int");
 
-                    b.Property<string>("Class")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Department")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -181,7 +178,13 @@ namespace Backend.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Khoa")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Lop")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -190,9 +193,6 @@ namespace Backend.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("RefreshTokeExpiryTime")
@@ -208,6 +208,9 @@ namespace Backend.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("sdt")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("urlUserImage")
                         .HasColumnType("nvarchar(max)");
 
@@ -216,26 +219,37 @@ namespace Backend.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Backend.Entities.Book", b =>
+            modelBuilder.Entity("Backend.Entitise.Book", b =>
                 {
-                    b.HasOne("Backend.Entities.Author", "Author")
+                    b.HasOne("Backend.Entitise.Author", "Author")
                         .WithMany("Books")
                         .HasForeignKey("IdAuthor")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Author");
                 });
 
-            modelBuilder.Entity("Backend.Entities.Borrow", b =>
+            modelBuilder.Entity("Backend.Entitise.ChiTietMuon", b =>
                 {
-                    b.HasOne("Backend.Entities.User", "Admin")
+                    b.HasOne("Backend.Entitise.MuonTra", "MuonTras")
+                        .WithMany("ChiTietMuons")
+                        .HasForeignKey("IdMuonTra")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MuonTras");
+                });
+
+            modelBuilder.Entity("Backend.Entitise.MuonTra", b =>
+                {
+                    b.HasOne("Backend.Entitise.User", "Admin")
                         .WithMany("Admins")
                         .HasForeignKey("IdAdmin")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Backend.Entities.User", "User")
+                    b.HasOne("Backend.Entitise.User", "User")
                         .WithMany("Users")
                         .HasForeignKey("IdUser")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -246,28 +260,17 @@ namespace Backend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Backend.Entities.DetailBorrow", b =>
-                {
-                    b.HasOne("Backend.Entities.Borrow", "Borrow")
-                        .WithMany("DetailBorrow")
-                        .HasForeignKey("IdBorrow")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Borrow");
-                });
-
-            modelBuilder.Entity("Backend.Entities.Author", b =>
+            modelBuilder.Entity("Backend.Entitise.Author", b =>
                 {
                     b.Navigation("Books");
                 });
 
-            modelBuilder.Entity("Backend.Entities.Borrow", b =>
+            modelBuilder.Entity("Backend.Entitise.MuonTra", b =>
                 {
-                    b.Navigation("DetailBorrow");
+                    b.Navigation("ChiTietMuons");
                 });
 
-            modelBuilder.Entity("Backend.Entities.User", b =>
+            modelBuilder.Entity("Backend.Entitise.User", b =>
                 {
                     b.Navigation("Admins");
 

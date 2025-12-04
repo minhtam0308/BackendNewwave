@@ -1,5 +1,6 @@
 ﻿using Backend.Data;
-using Backend.Entitise;
+using Backend.Entities;
+using Backend.Interface.Service;
 using Backend.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -41,9 +42,9 @@ namespace Backend.Sevices
                     urlUserImage = user.urlUserImage!,
                     Age = user.Age,
                     Location = user.Location,
-                    Khoa = user.Khoa,
-                    Lop = user.Lop,
-                    sdt = user.sdt
+                    Department = user.Department,
+                    Class = user.Class,
+                    PhoneNumber = user.PhoneNumber
                 }
             };
         }

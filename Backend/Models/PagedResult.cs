@@ -1,4 +1,4 @@
-﻿using Backend.Entitise;
+﻿using Backend.Entities;
 
 namespace Backend.Models
 {

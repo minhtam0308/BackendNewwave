@@ -1,4 +1,4 @@
-﻿using Backend.Entitise;
+﻿using Backend.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Data
@@ -9,8 +9,8 @@ namespace Backend.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<Author> Authors { get; set; }
-        public DbSet<MuonTra> MuonTras { get; set; }
-        public DbSet<ChiTietMuon> ChiTietMuons { get; set; }
+        public DbSet<Borrow> Borrows { get; set; }
+        public DbSet<DetailBorrow> DetailBorrows { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -20,27 +20,61 @@ namespace Backend.Data
             modelBuilder.Entity<Book>()
                 .HasOne(b => b.Author)
                 .WithMany(a => a.Books)
-                .HasForeignKey(b => b.IdAuthor);
+                .HasForeignKey(b => b.IdAuthor)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
-            modelBuilder.Entity<ChiTietMuon>()
-                .HasOne(b => b.MuonTras)
-                .WithMany(b => b.ChiTietMuons)
+            modelBuilder.Entity<DetailBorrow>()
+                .HasOne(b => b.Borrow)
+                .WithMany(b => b.DetailBorrow)
                 .HasForeignKey(b  => b.IdBook)
-                .HasForeignKey(b => b.IdMuonTra);
+                .HasForeignKey(b => b.IdBorrow)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<MuonTra>()
+            modelBuilder.Entity<Borrow>()
                 .HasOne(mt => mt.User)
                 .WithMany(u => u.Users)
                 .HasForeignKey(mt => mt.IdUser)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<MuonTra>()
+            modelBuilder.Entity<Borrow>()
                 .HasOne(mt => mt.Admin)
                 .WithMany(u => u.Admins)
                 .HasForeignKey(mt => mt.IdAdmin)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Borrow>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Book>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<DetailBorrow>().HasQueryFilter(x => !x.IsDeleted);
+
         }
+        public override int SaveChanges()
+        {
+            foreach (var entry in ChangeTracker.Entries()
+                     .Where(e => e.State == EntityState.Deleted))
+            {
+                entry.State = EntityState.Modified;
+                entry.CurrentValues["IsDeleted"] = true;
+            }
+
+            return base.SaveChanges();
+        }
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            foreach (var entry in ChangeTracker.Entries()
+                         .Where(e => e.State == EntityState.Deleted))
+            {
+                entry.State = EntityState.Modified;
+                entry.CurrentValues["IsDeleted"] = true;
+            }
+            foreach (var entry in ChangeTracker.Entries()
+                 .Where(e => e.State == EntityState.Modified))
+            {
+                entry.CurrentValues["UpdatedAt"] = DateTime.UtcNow;
+            }
+
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+
     }
 }

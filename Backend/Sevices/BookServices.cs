@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Backend.Data;
-using Backend.Entitise;
+using Backend.Entities;
+using Backend.Interface.Service;
 using Backend.Migrations.ImageDB;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ namespace Backend.Sevices
         {
             try
             {
+
                 var bookDel = context.Books.FirstOrDefault(b => b.Id == idBook);
                 if (bookDel == null)
                 {

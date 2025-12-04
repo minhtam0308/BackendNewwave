@@ -1,4 +1,4 @@
-﻿using Backend.Entitise;
+﻿using Backend.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +9,9 @@ using System.Text;
 using Serilog;
 using System.IdentityModel.Tokens.Jwt;
 using Backend.Models;
-using Backend.Sevices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Backend.Interface.Service;
 
 namespace Backend.Controllers
 {
@@ -24,7 +24,7 @@ namespace Backend.Controllers
         public async Task<ActionResult<string>> Register(UserDto request)
         {
             var user = await authService.RegisterAsyn(request);
-            if(user == null)
+            if(user is null)
             {
                 return Ok(new {
                 EC = 2,
@@ -83,7 +83,7 @@ namespace Backend.Controllers
                 return Ok(new
                 {
                     EC = 2,
-                    EM = Request.Cookies
+                    EM = "Refresh fail"
                 });
             }
 

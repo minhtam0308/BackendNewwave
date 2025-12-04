@@ -1,5 +1,6 @@
 ﻿using Backend.Data;
-using Backend.Entitise;
+using Backend.Entities;
+using Backend.Interface.Service;
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -20,9 +21,9 @@ namespace Backend.Sevices
                 user.Name = request.Name;
                 user.Location = request.Location;
                 user.Age = request.Age;
-                user.Khoa = request.Khoa;
-                user.Lop = request.Lop;
-                user.sdt = request.sdt;
+                user.Department = request.Department;
+                user.Class = request.Class;
+                user.PhoneNumber = request.PhoneNumber;
                 if (request.urlUserImage != null)
                 {
                     user.urlUserImage = request.urlUserImage;
