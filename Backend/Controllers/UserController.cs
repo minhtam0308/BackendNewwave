@@ -1,4 +1,5 @@
-﻿using Backend.Interface.Service;
+﻿using Backend.Exceptions;
+using Backend.Interface.Service;
 using Backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -18,11 +19,7 @@ namespace Backend.Controllers
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; 
             if(!Guid.TryParse(userId, out Guid userIdReuslt))
             {
-                return Ok(new
-                {
-                    EC = 2,
-                    EM = "You do not have permision"
-                });
+                throw new FEException("Guid Wrong");
 
             }
             UserResponse userRequest = new UserResponse()
@@ -41,19 +38,15 @@ namespace Backend.Controllers
             var resultChange = await userService.PutChangeUser(userRequest);
             if (resultChange == 1)
             {
-                return Ok(new
+                return StatusCode(500, new
                 {
                     EC = 1,
-                    EM = "Error from BE"
+                    EM = "ERROR FROM BE"
                 });
             }
             if (resultChange == 2)
             {
-                return Ok(new
-                {
-                    EC = 2,
-                    EM = "Yor data Wrong"
-                });
+                throw new FEException("Your data Wrong");
             }
             return Ok(new
             {

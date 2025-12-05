@@ -21,6 +21,19 @@ namespace Backend.Exceptions
             try
             {
                 await _next(context);  
+            }catch(FEException ex)
+            {
+                context.Response.ContentType = "application/json";
+
+                var response = new
+                {
+                    em = ex.Message,
+                    ec = ex.ErrorCode
+                };
+
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+                await context.Response.WriteAsync(JsonSerializer.Serialize(response));
             }
             catch (Exception ex)
             {

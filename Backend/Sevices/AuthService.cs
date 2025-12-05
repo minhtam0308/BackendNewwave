@@ -52,10 +52,6 @@ namespace Backend.Sevices
 
         public async Task<int?> RegisterAsyn(UserDto request)
         {
-            if (!IsValidEmail(request.Email))
-            {
-                return 2;
-            }
             if (await context.Users.AnyAsync(u => u.Email == request.Email)) {
                 return null;
             }
@@ -69,14 +65,7 @@ namespace Backend.Sevices
             return 0;
         }
 
-        private bool IsValidEmail(string email)
-        {
-            if (string.IsNullOrWhiteSpace(email))
-                return false;
 
-            var emailRegex = new Regex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
-            return emailRegex.IsMatch(email);
-        }
 
         private String CreateToken(User user)
         {

@@ -1,4 +1,5 @@
-﻿using Backend.Interface.Service;
+﻿using Backend.Exceptions;
+using Backend.Interface.Service;
 using Backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -16,11 +17,7 @@ namespace Backend.Controllers
         {
             if (file is null || file.Length == 0)
             {
-                return Ok(new
-                {
-                    EC = 2,
-                    EM = file
-                });
+                throw new FEException("Need file");
             }
             using var tempMemory = new MemoryStream();
             await file.CopyToAsync(tempMemory);
@@ -29,10 +26,10 @@ namespace Backend.Controllers
             var result = await imageServices.PostAddImage(new ImageRequest() { image = imageByte});
             if(result is null)
             {
-                return Ok(new
+                return StatusCode(500, new
                 {
                     EC = 1,
-                    EM = "Error from BE"
+                    EM = "ERROR FROM BE"
                 });
             }
             return Ok(new
@@ -49,21 +46,17 @@ namespace Backend.Controllers
         {
             if (!Guid.TryParse(idImage, out var guidId))
             {
-                return Ok(new
-                {
-                    EC = 2,
-                    EM = "Guid Wrong"
-                });
+                throw new FEException("Guid Wrong");
             }
 
 
             var result = await imageServices.GetBookImage(guidId);
             if (result is null)
             {
-                return Ok(new
+                return StatusCode(500, new
                 {
                     EC = 1,
-                    EM = "Error from BE"
+                    EM = "ERROR FROM BE"
                 });
             }
             return File(result.image, "image/png");
@@ -85,11 +78,7 @@ namespace Backend.Controllers
             }
             if (!Guid.TryParse(idImage, out var guidId))
             {
-                return Ok(new
-                {
-                    EC = 2,
-                    EM = "Guid Wrong"
-                });
+                throw new FEException("Guid Wrong");
             }
 
             using var tempMemory = new MemoryStream();
@@ -99,19 +88,15 @@ namespace Backend.Controllers
             var result = await imageServices.PutImage(guidId, imageByte);
             if (result == 1)
             {
-                return Ok(new
+                return StatusCode(500, new
                 {
                     EC = 1,
-                    EM = "Error from BE"
+                    EM = "ERROR FROM BE"
                 });
             }
             if (result == 2)
             {
-                return Ok(new
-                {
-                    EC = 2,
-                    EM = "Image is not exist"
-                });
+                throw new FEException("Image is not exist");
             }
             return Ok(new
             {
@@ -129,11 +114,7 @@ namespace Backend.Controllers
 
             if (!Guid.TryParse(idImage, out var guidId))
             {
-                return Ok(new
-                {
-                    EC = 2,
-                    EM = "Guid Wrong"
-                });
+                throw new FEException("Guid Wrong");
             }
 
 
@@ -141,18 +122,18 @@ namespace Backend.Controllers
             var result = await imageServices.DelImage(guidId);
             if (result == 1)
             {
-                return Ok(new
+                return StatusCode(500, new
                 {
                     EC = 1,
-                    EM = "Error from BE"
+                    EM = "ERROR FROM BE"
                 });
             }
             if (result == 2)
             {
-                return Ok(new
+                return StatusCode(500, new
                 {
-                    EC = 2,
-                    EM = "Image is not exist"
+                    EC = 1,
+                    EM = "ERROR FROM BE"
                 });
             }
             return Ok(new

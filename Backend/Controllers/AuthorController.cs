@@ -1,7 +1,9 @@
 ﻿using Backend.Entities;
+using Backend.Exceptions;
 using Backend.Interface.Service;
 using Backend.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,11 +19,7 @@ namespace Backend.Controllers
         {
             if(name == null)
             {
-                return Ok(new
-                {
-                    EC = 2,
-                    EM = "Provide Name"
-                });
+                throw new FEException("Provide Name");
             }
             var result = await authorServices.PostAuthor(name);
             if(result == 0)
@@ -31,10 +29,10 @@ namespace Backend.Controllers
                 EM = "Create success"
                 });
             }
-            return Ok(new
+            return StatusCode(500, new
             {
                 EC = 1,
-                EM = "Error from BE"
+                EM = "ERROR FROM BE"
             });
         }
 
@@ -54,33 +52,25 @@ namespace Backend.Controllers
         [HttpPut("putEditAuthor")]
         public async Task<ActionResult> PutEditAuthor([FromBody] AuthorRenameRequest author)
         {
-            if(author is null)
-            {
-                return Ok(new
-                {
-                    EC = 3,
-                    EM = "Author is undefined"
-                });
-            }
+            
+            if(author is null || author.NameAuthor == "")
+                throw new FEException("Author is undefined");
 
-                var result = await authorServices.PutAuthor(author);
-                if (result == 2) 
-                return Ok(new
-                    {
-                        EC = 2,
-                        EM = "Author is not exist"
-                    });
-                
-                if(result == 0) 
+
+            var result = await authorServices.PutAuthor(author);
+            if (result == 2)
+            throw new FEException("Author is not exist");
+
+            if (result == 0) 
                 return Ok(new{
                     EC = 0,
                     EM = "Edit success"
                 });
-                return Ok(new
-                {
-                    EC = 1,
-                    EM = "Error from BE"
-                });
+            return StatusCode(500, new
+            {
+                EC = 1,
+                EM = "ERROR FROM BE"
+            });
 
         }
 
@@ -91,11 +81,7 @@ namespace Backend.Controllers
             var result = await authorServices.DeleteAuthor(idAuthor);
             if (result == 2)
             {
-                return Ok(new
-                {
-                    EC = 2,
-                    EM = "Author is not exist"
-                });
+                throw new FEException("Author is not exist");
             }
             if(result == 0)
                 return Ok(new
@@ -103,10 +89,10 @@ namespace Backend.Controllers
                     EC = 0,
                     EM = "Delete success"
                 });
-            return Ok(new
+            return StatusCode(500, new
             {
                 EC = 1,
-                EM = "Error from BE"
+                EM = "ERROR FROM BE"
             });
         }
 

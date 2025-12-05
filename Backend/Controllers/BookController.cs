@@ -1,4 +1,5 @@
 ﻿using Backend.Entities;
+using Backend.Exceptions;
 using Backend.Interface.Service;
 using Backend.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -29,11 +30,7 @@ namespace Backend.Controllers
             var inforPage = await bookServices.GetBookPaginate(request);
             if(inforPage is null)
             {
-                return Ok(new
-                {
-                    ec = 2,
-                    em = "Out of book"
-                });
+                throw new FEException("Out of book");
             }
             return Ok(new
             {
@@ -46,12 +43,17 @@ namespace Backend.Controllers
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> PostCreateBook(BookRequest request)
         {
+            if(request is null || request.TotalCopies == 0 || request.Title == "")
+            {
+                throw new FEException("Your data does not meet the requirements");
+            }
+
             var resultCreate = await bookServices.PostCreateBook(request);
             if (resultCreate == 1)
-                return Ok(new
+                return StatusCode(500, new
                 {
                     EC = 1,
-                    EM = "Error from BE"
+                    EM = "ERROR FROM BE"
                 });
             return Ok(new
             {
@@ -66,18 +68,14 @@ namespace Backend.Controllers
         {
             var result = await bookServices.PutBook(request);
             if (result == 1)
-                return Ok(new
+                return StatusCode(500, new
                 {
                     EC = 1,
-                    EM = "Error from BE"
+                    EM = "ERROR FROM BE"
                 });
-            if(result == 2)
+            if (result == 2)
             {
-                return Ok(new
-                {
-                    EC = 2,
-                    EM = "Book is not exist"
-                });
+                throw new FEException("Book is not exist");
             }
 
             return Ok(new
@@ -93,26 +91,18 @@ namespace Backend.Controllers
         {
             if (!Guid.TryParse(idBook, out var guidId))
             {
-                return Ok(new
-                {
-                    EC = 2,
-                    EM = "Guid Wrong"
-                });
+                throw new FEException("Guid Wrong");
             }
             var result = await bookServices.DelBook(guidId);
             if (result == 1)
-                return Ok(new
+                return StatusCode(500, new
                 {
                     EC = 1,
-                    EM = "Error from BE"
+                    EM = "ERROR FROM BE"
                 });
             if (result == 2)
             {
-                return Ok(new
-                {
-                    EC = 2,
-                    EM = "Book is not exist"
-                });
+                throw new FEException("Book is not exist");
             }
 
             return Ok(new

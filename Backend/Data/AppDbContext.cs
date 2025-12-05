@@ -58,6 +58,8 @@ namespace Backend.Data
             modelBuilder.Entity<DetailBorrow>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Cart>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<CartBook>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Author>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Borrow>().HasQueryFilter(x => !x.IsDeleted);
 
         }
         public override int SaveChanges()
