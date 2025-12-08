@@ -2,7 +2,7 @@
 using Backend.Data;
 using Backend.Entities;
 using Backend.Interface.Service;
-using Backend.Models;
+using Backend.Models.Author;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Serilog;

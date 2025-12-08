@@ -49,7 +49,7 @@ namespace Backend.Exceptions
 
             var response = new
             {
-                em = ex.Message,
+                em = "Error BE",
                 ec = 1,
                 status = 500
             };

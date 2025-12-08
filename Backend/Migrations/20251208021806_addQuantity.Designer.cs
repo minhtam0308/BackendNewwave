@@ -4,6 +4,7 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251208021806_addQuantity")]
+    partial class addQuantity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,15 +146,10 @@ namespace Backend.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("idUser")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Carts");
                 });
@@ -162,34 +160,24 @@ namespace Backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("BookId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("IdBook")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("IdCart")
+                    b.Property<Guid>("IdCard")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookId");
-
                     b.HasIndex("IdBook");
-
-                    b.HasIndex("IdCart");
 
                     b.ToTable("CartBooks");
                 });
@@ -315,34 +303,13 @@ namespace Backend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Backend.Entities.Cart", b =>
-                {
-                    b.HasOne("Backend.Entities.User", "User")
-                        .WithMany("Carts")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Backend.Entities.CartBook", b =>
                 {
-                    b.HasOne("Backend.Entities.Book", null)
-                        .WithMany("CartBooks")
-                        .HasForeignKey("BookId");
-
-                    b.HasOne("Backend.Entities.Book", "Book")
-                        .WithMany()
+                    b.HasOne("Backend.Entities.Cart", "Cart")
+                        .WithMany("cartBooks")
                         .HasForeignKey("IdBook")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("Backend.Entities.Cart", "Cart")
-                        .WithMany("cartBooks")
-                        .HasForeignKey("IdCart")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Book");
 
                     b.Navigation("Cart");
                 });
@@ -363,11 +330,6 @@ namespace Backend.Migrations
                     b.Navigation("Books");
                 });
 
-            modelBuilder.Entity("Backend.Entities.Book", b =>
-                {
-                    b.Navigation("CartBooks");
-                });
-
             modelBuilder.Entity("Backend.Entities.Borrow", b =>
                 {
                     b.Navigation("DetailBorrow");
@@ -381,8 +343,6 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Entities.User", b =>
                 {
                     b.Navigation("Admins");
-
-                    b.Navigation("Carts");
 
                     b.Navigation("Users");
                 });

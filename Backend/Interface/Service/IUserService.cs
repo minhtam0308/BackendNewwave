@@ -1,4 +1,4 @@
-﻿using Backend.Models;
+﻿using Backend.Models.Auth;
 
 namespace Backend.Interface.Service
 {

@@ -15,5 +15,6 @@ namespace Backend.Entities
 
         public string? UrlBook { get; set; }     
 
+        public List<CartBook>? CartBooks { get; set; } = new List<CartBook>();
     }
 }

@@ -48,10 +48,14 @@ namespace Backend.Data
             modelBuilder.Entity<CartBook>()
                 .HasOne(mt => mt.Cart)
                 .WithMany(u => u.cartBooks)
-                .HasForeignKey(mt => mt.IdCard)
-                .HasForeignKey(mt => mt.IdBook)
+                .HasForeignKey(mt => mt.IdCart)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            //modelBuilder.Entity<CartBook>()
+            //    .HasOne(cb => cb.Book)
+            //    .WithMany(b => b.CartBooks)   
+            //    .HasForeignKey(cb => cb.IdBook)
+            //    .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Borrow>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Book>().HasQueryFilter(x => !x.IsDeleted);

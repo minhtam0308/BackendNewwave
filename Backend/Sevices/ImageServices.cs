@@ -2,7 +2,7 @@
 using Backend.Data;
 using Backend.Entities;
 using Backend.Interface.Service;
-using Backend.Models;
+using Backend.Models.Image;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using static System.Net.Mime.MediaTypeNames;

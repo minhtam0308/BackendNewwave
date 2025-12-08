@@ -2,8 +2,10 @@
 //using Backend.Extensions;
 using Backend.Exceptions;
 using Backend.Extensions;
+using Backend.Mapper;
 using Backend.Middlware;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Scalar.AspNetCore;
 using Serilog;
 
@@ -13,7 +15,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
 services.ServicesConfigs(builder.Configuration);
-
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -31,12 +32,13 @@ if (app.Environment.IsDevelopment())
 }
 
 //app.UseAuthMiddleware();
-
-app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
+
 app.UseCors("AllowAll");
+
 app.UseAuthorization();
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapControllers();
 

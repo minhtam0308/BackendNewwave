@@ -1,7 +1,7 @@
 ﻿using Backend.Data;
 using Backend.Entities;
 using Backend.Interface.Service;
-using Backend.Models;
+using Backend.Models.Auth;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 

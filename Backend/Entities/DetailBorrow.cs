@@ -5,6 +5,7 @@
         public Guid IdBorrow { get; set; }
         public Borrow? Borrow { get; set; }
         public Guid IdBook { get; set; }
+        public int Quantity { get; set; } = 0;
 
     }
 }

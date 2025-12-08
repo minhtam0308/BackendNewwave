@@ -1,7 +1,7 @@
 ﻿using Backend.Entities;
 using Backend.Exceptions;
 using Backend.Interface.Service;
-using Backend.Models;
+using Backend.Models.Book;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

@@ -1,5 +1,6 @@
 ﻿using Backend.Data;
 using Backend.Interface.Service;
+using Backend.Mapper;
 using Backend.Sevices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,12 @@ namespace Backend.Extensions
 
             services.AddOpenApi("v2");
 
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile<MapperProfile>();
+            });
+
+
             services.AddCors(options =>
             {
                 options.AddPolicy(name: "AllowAll",
@@ -31,6 +38,7 @@ namespace Backend.Extensions
             services.AddScoped<IAuthorServices, AuthorServices>();
             services.AddScoped<IImageServices, ImageServices>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICartServices, CartServices>();
 
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

@@ -3,7 +3,7 @@ using Backend.Data;
 using Backend.Entities;
 using Backend.Interface.Service;
 using Backend.Migrations.ImageDB;
-using Backend.Models;
+using Backend.Models.Book;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -63,7 +63,9 @@ namespace Backend.Sevices
         {
             try
             {
-                var query = context.Books.AsQueryable();
+                var query = context.Books;
+                //Console.WriteLine("query ");
+                //Console.WriteLine(query.ToString());
                 var totalCount = await query.CountAsync();
 
                 if ((paginationRequest.PageNumber - 1) * paginationRequest.PageSize > totalCount)

@@ -2,6 +2,7 @@
 using Backend.Entities;
 using Backend.Interface.Service;
 using Backend.Models;
+using Backend.Models.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

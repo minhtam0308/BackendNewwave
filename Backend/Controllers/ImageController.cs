@@ -23,7 +23,7 @@ namespace Backend.Controllers
             await file.CopyToAsync(tempMemory);
             var imageByte = tempMemory.ToArray();
 
-            var result = await imageServices.PostAddImage(new ImageRequest() { image = imageByte});
+            var result = await imageServices.PostAddImage(new Models.Image.ImageRequest() { image = imageByte});
             if(result is null)
             {
                 return StatusCode(500, new

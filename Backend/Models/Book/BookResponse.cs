@@ -1,6 +1,6 @@
 ﻿using Backend.Entities;
 
-namespace Backend.Models
+namespace Backend.Models.Book
 {
     public class BookResponse
     {

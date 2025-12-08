@@ -1,6 +1,6 @@
 ﻿using Backend.Exceptions;
 using Backend.Interface.Service;
-using Backend.Models;
+using Backend.Models.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,10 +18,9 @@ namespace Backend.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; 
             if(!Guid.TryParse(userId, out Guid userIdReuslt))
-            {
                 throw new FEException("Guid Wrong");
 
-            }
+
             UserResponse userRequest = new UserResponse()
             {
                 Id = userIdReuslt,

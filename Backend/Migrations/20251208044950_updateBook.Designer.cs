@@ -4,6 +4,7 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251208044950_updateBook")]
+    partial class updateBook
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -171,7 +174,7 @@ namespace Backend.Migrations
                     b.Property<Guid>("IdBook")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("IdCart")
+                    b.Property<Guid>("IdCard")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
@@ -188,8 +191,6 @@ namespace Backend.Migrations
                     b.HasIndex("BookId");
 
                     b.HasIndex("IdBook");
-
-                    b.HasIndex("IdCart");
 
                     b.ToTable("CartBooks");
                 });
@@ -326,19 +327,13 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Entities.CartBook", b =>
                 {
-                    b.HasOne("Backend.Entities.Book", null)
+                    b.HasOne("Backend.Entities.Book", "Book")
                         .WithMany("CartBooks")
                         .HasForeignKey("BookId");
 
-                    b.HasOne("Backend.Entities.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("IdBook")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Backend.Entities.Cart", "Cart")
                         .WithMany("cartBooks")
-                        .HasForeignKey("IdCart")
+                        .HasForeignKey("IdBook")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

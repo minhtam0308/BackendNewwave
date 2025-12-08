@@ -1,5 +1,5 @@
 ﻿using Backend.Entities;
-using Backend.Models;
+using Backend.Models.Book;
 
 namespace Backend.Interface.Service
 {
