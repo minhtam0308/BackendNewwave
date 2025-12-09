@@ -17,6 +17,6 @@
 
         public List<Borrow> Users { get; set; } = new();
         public List<Borrow> Admins { get; set; } = new();
-        public Cart Cart { get; set; } = new();
+        public Cart? Cart { get; set; }
     }
 }

@@ -385,8 +385,7 @@ namespace Backend.Migrations
                 {
                     b.Navigation("Admins");
 
-                    b.Navigation("Cart")
-                        .IsRequired();
+                    b.Navigation("Cart");
 
                     b.Navigation("Users");
                 });
