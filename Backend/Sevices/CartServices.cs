@@ -93,12 +93,13 @@ namespace Backend.Sevices
                             {
                                 Id = booktemp.Id,
                                 Title = booktemp.Title ,
-                                NameAuthor = booktemp.Author!.NameAuthor ,
+                                NameAuthor = booktemp.Author!.NameAuthor,
                                 Description = booktemp.Description,
                                 TotalCopies = booktemp.TotalCopies,
                                 AvailableCopies = booktemp.AvailableCopies,
                                 UrlBook = booktemp.UrlBook,
                                 IdAuthor = booktemp.IdAuthor,
+                                Quantity = cartBook.Quantity,
                                 CreatedAt = booktemp.CreatedAt
                             };
                             result.ListBook.Add(resultBook);
