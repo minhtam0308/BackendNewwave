@@ -16,5 +16,6 @@ namespace Backend.Entities
         public string? UrlBook { get; set; }     
 
         public List<CartBook>? CartBooks { get; set; } = new List<CartBook>();
+        public List<DetailBorrow>? DetailBorrows { get; set; } = new List<DetailBorrow>();
     }
 }

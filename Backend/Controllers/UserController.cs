@@ -29,7 +29,7 @@ namespace Backend.Controllers
                 Location = request.Location,
                 Name = request.Name,
                 Role = request.Role,
-                urlUserImage = request.urlUserImage,
+                UrlUserImage = request.UrlUserImage,
                 Department = request.Department,
                 Class = request.Class,
                 PhoneNumber = request.PhoneNumber

@@ -29,8 +29,13 @@ namespace Backend.Data
             modelBuilder.Entity<DetailBorrow>()
                 .HasOne(b => b.Borrow)
                 .WithMany(b => b.DetailBorrow)
-                .HasForeignKey(b  => b.IdBook)
                 .HasForeignKey(b => b.IdBorrow)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<DetailBorrow>()
+                .HasOne(b => b.Book)
+                .WithMany(b => b.DetailBorrows)
+                .HasForeignKey(b => b.IdBook)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Borrow>()
@@ -47,15 +52,21 @@ namespace Backend.Data
 
             modelBuilder.Entity<CartBook>()
                 .HasOne(mt => mt.Cart)
-                .WithMany(u => u.cartBooks)
+                .WithMany(u => u.CartBooks)
                 .HasForeignKey(mt => mt.IdCart)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //modelBuilder.Entity<CartBook>()
-            //    .HasOne(cb => cb.Book)
-            //    .WithMany(b => b.CartBooks)   
-            //    .HasForeignKey(cb => cb.IdBook)
-            //    .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CartBook>()
+                .HasOne(cb => cb.Book)
+                .WithMany(b => b.CartBooks)
+                .HasForeignKey(cb => cb.IdBook)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Cart>()
+                .HasOne(cb => cb.User)
+                .WithOne(b => b.Cart)
+                .HasForeignKey<Cart>(c => c.IdUser)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Borrow>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Book>().HasQueryFilter(x => !x.IsDeleted);

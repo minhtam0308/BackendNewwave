@@ -2,6 +2,6 @@
 {
     public class ImageRequest
     {
-        public required byte[] image { get; set; }
+        public required byte[] Image { get; set; }
     }
 }

@@ -31,10 +31,10 @@ namespace Backend.Sevices
                 if (bookInfor == null || bookInfor.AvailableCopies < request.Quantity)
                     return 2;
 
-                var checkCart = await context.Carts.FirstOrDefaultAsync(c => c.idUser == idUser);
+                var checkCart = await context.Carts.FirstOrDefaultAsync(c => c.IdUser == idUser);
                 if (checkCart == null)
                 {
-                    var newCart = new Cart() { idUser = idUser };
+                    var newCart = new Cart() { IdUser = idUser };
                     context.Carts.Add(newCart);
                     
                     var newCartBook = new CartBook() { IdCart = newCart.Id, IdBook = idBook, Quantity = request.Quantity };
@@ -70,8 +70,8 @@ namespace Backend.Sevices
             try
             {
                 var cart = await context.Carts
-                    .Include(c => c.cartBooks)
-                    .FirstOrDefaultAsync(c => c.idUser == idUser);
+                    .Include(c => c.CartBooks)
+                    .FirstOrDefaultAsync(c => c.IdUser == idUser);
                 if (cart == null)
                 {
                     return null;
@@ -83,9 +83,9 @@ namespace Backend.Sevices
                     ListBook = new List<BookResponse>()
                 };
 
-                if(cart.cartBooks != null && cart.cartBooks.Count != 0)
+                if(cart.CartBooks != null && cart.CartBooks.Count != 0)
                 {
-                    foreach(var cartBook in cart.cartBooks)
+                    foreach(var cartBook in cart.CartBooks)
                     {
                         var booktemp = await context.Books.Include(b=>b.Author).FirstOrDefaultAsync(book => book.Id == cartBook.IdBook);
                         if (booktemp != null) {

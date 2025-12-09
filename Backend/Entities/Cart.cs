@@ -2,8 +2,8 @@
 {
     public class Cart : BaseEntity
     {
-        public Guid idUser { get; set; }
-        public User? User { get; set; }
-        public List<CartBook> cartBooks { get; set; } = new List<CartBook>();
+        public Guid IdUser { get; set; }
+        public User User { get; set; } = new();
+        public List<CartBook> CartBooks { get; set; } = new List<CartBook>();
     }
 }

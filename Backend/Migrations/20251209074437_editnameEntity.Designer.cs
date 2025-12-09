@@ -4,6 +4,7 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251209074437_editnameEntity")]
+    partial class editnameEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -213,8 +216,6 @@ namespace Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdBook");
-
                     b.HasIndex("IdBorrow");
 
                     b.ToTable("DetailBorrows");
@@ -342,19 +343,11 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Entities.DetailBorrow", b =>
                 {
-                    b.HasOne("Backend.Entities.Book", "Book")
-                        .WithMany("DetailBorrows")
-                        .HasForeignKey("IdBook")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Backend.Entities.Borrow", "Borrow")
                         .WithMany("DetailBorrow")
                         .HasForeignKey("IdBorrow")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Book");
 
                     b.Navigation("Borrow");
                 });
@@ -367,8 +360,6 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Entities.Book", b =>
                 {
                     b.Navigation("CartBooks");
-
-                    b.Navigation("DetailBorrows");
                 });
 
             modelBuilder.Entity("Backend.Entities.Borrow", b =>

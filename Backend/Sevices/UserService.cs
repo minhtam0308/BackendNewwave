@@ -24,9 +24,9 @@ namespace Backend.Sevices
                 user.Department = request.Department;
                 user.Class = request.Class;
                 user.PhoneNumber = request.PhoneNumber;
-                if (request.urlUserImage != null)
+                if (request.UrlUserImage != null)
                 {
-                    user.urlUserImage = request.urlUserImage;
+                    user.UrlUserImage = request.UrlUserImage;
                 }
                 await context.SaveChangesAsync();
                 return 0;

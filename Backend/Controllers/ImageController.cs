@@ -23,7 +23,7 @@ namespace Backend.Controllers
             await file.CopyToAsync(tempMemory);
             var imageByte = tempMemory.ToArray();
 
-            var result = await imageServices.PostAddImage(new Models.Image.ImageRequest() { image = imageByte});
+            var result = await imageServices.PostAddImage(new Models.Image.ImageRequest() { Image = imageByte});
             if(result is null)
             {
                 return StatusCode(500, new
@@ -59,7 +59,7 @@ namespace Backend.Controllers
                     EM = "ERROR FROM BE"
                 });
             }
-            return File(result.image, "image/png");
+            return File(result.Image, "image/png");
 
 
         }

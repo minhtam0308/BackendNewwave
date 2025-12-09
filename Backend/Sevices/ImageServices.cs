@@ -30,7 +30,7 @@ namespace Backend.Sevices
         {
             try
             {
-                BookImage newImage = new BookImage() { image = request.image };
+                BookImage newImage = new BookImage() { Image = request.Image };
                 await context.BookImages.AddAsync(newImage);
                 await context.SaveChangesAsync();
                 return newImage.Id;
@@ -54,7 +54,7 @@ namespace Backend.Sevices
                 {
                     return 2;
                 }
-                editImage.image = image;
+                editImage.Image = image;
                 await context.SaveChangesAsync();
                 return 0;
             }
@@ -97,7 +97,7 @@ namespace Backend.Sevices
                 {
                     return null;
                 }
-                return image.image;
+                return image.Image;
             }
             catch (Exception ex)
             {

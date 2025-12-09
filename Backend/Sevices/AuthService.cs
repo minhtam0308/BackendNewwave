@@ -41,7 +41,7 @@ namespace Backend.Sevices
                     Id=user.Id, 
                     Role= user.Role, 
                     Name=user.Name, 
-                    urlUserImage = user.urlUserImage!,
+                    UrlUserImage = user.UrlUserImage!,
                     Age = user.Age,
                     Location = user.Location,
                     Department = user.Department,
