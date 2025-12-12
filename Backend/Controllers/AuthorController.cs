@@ -40,7 +40,7 @@ namespace Backend.Controllers
         [HttpGet("getAllAuthor")]
         public async Task<ActionResult> GetAllAuthor()
         {
-            var result = await authorServices.getAllAuthor();
+            var result = await authorServices.GetAllAuthor();
             
             return Ok(new {
                 EC = 0,

@@ -30,7 +30,7 @@ namespace Backend.Extensions
                     .WithOrigins("http://localhost:3000")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
-                    .AllowCredentials()); //cookie need this
+                    .AllowCredentials());
             });
 
             services.AddScoped<IAuthService, AuthService>();

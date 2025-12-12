@@ -32,7 +32,7 @@ namespace Backend.Sevices
 
         }
 
-        public async Task<List<Author>> getAllAuthor()
+        public async Task<List<Author>> GetAllAuthor()
         {
             List<Author> listAuthor = await context.Authors.ToListAsync();
             return listAuthor;
