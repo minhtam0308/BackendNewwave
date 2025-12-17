@@ -1,4 +1,4 @@
-﻿namespace Backend.Entities
+﻿namespace BeNewNewave.Entities
 {
     public class Borrow : BaseEntity
     {

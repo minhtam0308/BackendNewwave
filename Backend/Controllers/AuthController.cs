@@ -1,76 +1,46 @@
-﻿using Backend.Entities;
-using Backend.Exceptions;
-using Backend.Interface.Service;
-using Backend.Models.Auth;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿
+using BeNewNewave.DTOs;
+using BeNewNewave.Interface.IServices;
+using BeNewNewave.DTOs;
+using BeNewNewave.Strategy.ResponseDtoStrategy;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Serilog;
-using System.Diagnostics.SymbolStore;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace Backend.Controllers
+
+namespace BeNewNewave.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController(IAuthService authService, IConfiguration configuration) : ControllerBase
     {
-       
+        private ResponseDto _response = new ResponseDto();
         [HttpPost("register")]
-        public async Task<ActionResult<string>> Register(UserDto request)
+        public async Task<ActionResult<object>> RegisterAsync(UserDto request)
         {
-            if (request == null || !ValidatePassword(request.Password) || !IsValidEmail(request.Email))
+            if (request == null || request.Email == "" || request.Password == "" || request.Name == "" )
             {
-                throw new FEException("Your data does not meet the requirements");
+                return _response.GenerateStrategyResponseDto("userError");
             }
-            var user = await authService.RegisterAsyn(request);
-
-            if(user is null)
-            {
-                throw new FEException("Account was exist");
-            }
-            return Ok(new
-            {
-                EC = 0,
-                EM = "Register success"
-            });
-        }
-        bool ValidatePassword(string password)
-        {
-            // Ít nhất 8 ký tự, 1 chữ hoa, 1 chữ thường, 1 số, 1 ký tự đặc biệt
-            var pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$";
-            return Regex.IsMatch(password, pattern);
+            var user = await authService.RegisterAsync(request);
+            return Ok(user);
         }
 
-        private bool IsValidEmail(string email)
-        {
-            if (string.IsNullOrWhiteSpace(email))
-                return false;
-
-            var emailRegex = new Regex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
-            return emailRegex.IsMatch(email);
-        }
 
 
 
         [HttpPost("login")]
-        public async Task<ActionResult<TokenResponseDto>> Login(UserLoginDto request)
+        public async Task<ActionResult<ResponseDto>> LoginAsync(UserLoginDto request)
         {
-            if (request == null || !ValidatePassword(request.Password) || !IsValidEmail(request.Email))
+            if (request == null || request.Email == "" || request.Password == "")
             {
-                throw new FEException("Your data does not meet the requirements");
+                return BadRequest(_response.GenerateStrategyResponseDto("userError"));
             }
-            var result = await authService.LoginAsyn(request);
-            if (result == null) {
-                throw new FEException("Email or password is invalied");
+            ResponseDto result = await authService.LoginAsyn(request);
+            if (result.errorCode != 0)
+            {
+                return BadRequest(result);
             }
-            Response.Cookies.Append("refreshToken", result.RefreshToken, new CookieOptions
+            TokenResponseDto tokenInfor =(TokenResponseDto) result.data;
+            Response.Cookies.Append("refreshToken", tokenInfor.RefreshToken, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
@@ -79,40 +49,35 @@ namespace Backend.Controllers
             });
 
             // 6. Lưu userId vào cookies
-            Response.Cookies.Append("userId", result.User.Id.ToString(), new CookieOptions
+            Response.Cookies.Append("userId", tokenInfor.User.Id.ToString(), new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,
                 Expires = DateTime.UtcNow.AddDays(configuration.GetValue<int>("appsetting:timeResfreshTokenExpire"))
             });
-            return Ok(new
-            {
-                EC = 0,
-                EM = result.AccessToken,
-                user = result.User
-            });
+            return Ok(result);
         }
 
         [HttpPost("refresh-token")]
-        public async Task<ActionResult<TokenResponseDto>> RefreshToken()
+        public async Task<ActionResult<ResponseDto>> RefreshTokenAsync()
         {
             if (!Request.Cookies.TryGetValue("userId", out string? userId) || !Request.Cookies.TryGetValue("refreshToken", out string? refreshToken))
             {
-                throw new FEException("Refresh fail");
+                return BadRequest(_response.GenerateStrategyResponseDto("userError"));
             }
 
             if (!Guid.TryParse(userId, out var guidId))
             {
-                throw new FEException("Guid can not convert");
+                return BadRequest(_response.GenerateStrategyResponseDto("userError"));
             }
-            var result = await authService.RefreshTokenAsyn(new RefreshTokenRequest() { UserId = guidId, RefreshToken = refreshToken });
-            if(result is null)
+            ResponseDto result = await authService.RefreshTokenAsyn(new RefreshTokenRequest() { UserId = guidId, RefreshToken = refreshToken });
+            if (result.errorCode != 0)
             {
-                throw new FEException("Refresh token is wrong");
+                return BadRequest(_response.GenerateStrategyResponseDto("userError"));
             }
-
-            Response.Cookies.Append("refreshToken", result.RefreshToken, new CookieOptions
+            TokenResponseDto tokenInfor = (TokenResponseDto)result.data;
+            Response.Cookies.Append("refreshToken", tokenInfor.RefreshToken, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
@@ -121,7 +86,7 @@ namespace Backend.Controllers
             });
 
             // 6. Lưu userId vào cookies
-            Response.Cookies.Append("userId", result.User.Id.ToString(), new CookieOptions
+            Response.Cookies.Append("userId", tokenInfor.User.Id.ToString(), new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
@@ -129,31 +94,12 @@ namespace Backend.Controllers
                 Expires = DateTime.UtcNow.AddDays(configuration.GetValue<int>("appsetting:timeResfreshTokenExpire"))
             });
 
-            return Ok(new
-            {
-                EC = 0,
-                EM = result.AccessToken,
-                user = result.User
-            });
+            return Ok(result);
         }
 
-
-        [Authorize]
-        [HttpGet]
-        public ActionResult<String> AuthorTestEndpoint()
-        {
-            return Ok("you are authenticated");
-        }
-
-        [Authorize(Roles = "admin")]
-        [HttpGet("admin-only")]
-        public ActionResult<String> AuthorAdminOnlyEndpoint()
-        {
-            return Ok("you are admin");
-        }
 
         [HttpGet("logout")]
-        public async Task<ActionResult<TokenResponseDto>> Logout()
+        public ActionResult<ResponseDto> Logout()
         {
 
             Response.Cookies.Append("refreshToken", "", new CookieOptions
@@ -172,11 +118,8 @@ namespace Backend.Controllers
                 SameSite = SameSiteMode.None,
                 Expires = DateTime.UtcNow.AddDays(-1)
             });
-            return Ok(new
-            {
-                EC = 0,
-                EM = "You were logout"
-            });
+            _response.SetResponseDtoStrategy(new Success());
+            return Ok(_response.GetResponseDto());
         }
 
     }

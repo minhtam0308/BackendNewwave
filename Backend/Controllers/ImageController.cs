@@ -1,110 +1,86 @@
-﻿using Backend.Exceptions;
-using Backend.Interface.Service;
-using Backend.Models;
+﻿
+using BeNewNewave.DTOs;
+using BeNewNewave.Entities;
+using BeNewNewave.Interface.Services;
+using BeNewNewave.Strategy.ResponseDtoStrategy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
-namespace Backend.Controllers
+namespace BeNewNewave.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class ImageController(IImageServices imageServices) : ControllerBase
     {
+        private readonly ResponseDto _response = new ResponseDto();
         [Authorize(Roles = "admin, user")]
         [HttpPost("postCreateImage")]
-        public async Task<ActionResult> PostCreateImage(IFormFile file)
+        public async Task<ActionResult<Guid>> PostCreateImage(IFormFile file)
         {
+            //check data
             if (file is null || file.Length == 0)
             {
-                throw new FEException("Need file");
+                return BadRequest(_response.GenerateStrategyResponseDto("userError"));
             }
+            //get iduser
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!Guid.TryParse(userId, out Guid userIdGuid))
+                return BadRequest(_response.GenerateStrategyResponseDto("userError"));
+            //convert file to byte
             using var tempMemory = new MemoryStream();
             await file.CopyToAsync(tempMemory);
             var imageByte = tempMemory.ToArray();
-
-            var result = await imageServices.PostAddImage(new Models.Image.ImageRequest() { Image = imageByte});
-            if(result is null)
-            {
-                return StatusCode(500, new
-                {
-                    EC = 1,
-                    EM = "ERROR FROM BE"
-                });
-            }
-            return Ok(new
-            {
-                EC = 0,
-                EM = result
-            });
-
-
+            var newImage = new BookImage() { Image = imageByte };
+            //create image
+            imageServices.Create(newImage, userId);
+            //return idImage
+            _response.SetResponseDtoStrategy(new Success("get image success", newImage.Id));
+            return Ok(_response.GetResponseDto());
         }
 
         [HttpGet("getImage")]
-        public async Task<ActionResult> GetImage(string idImage)
+        public ActionResult? GetImage(string idImage)
         {
             if (!Guid.TryParse(idImage, out var guidId))
             {
-                throw new FEException("Guid Wrong");
+                _response.SetResponseDtoStrategy(new UserError());
+                return BadRequest(_response.GetResponseDto());
             }
-
-
-            var result = await imageServices.GetBookImage(guidId);
-            if (result is null)
+            var result = imageServices.GetById(guidId);
+            if(result == null)
             {
-                return StatusCode(500, new
-                {
-                    EC = 1,
-                    EM = "ERROR FROM BE"
-                });
+                return null; 
             }
             return File(result.Image, "image/png");
-
-
         }
 
         [Authorize(Roles = "admin")]
         [HttpPut("putImage")]
-        public async Task<ActionResult> PutImage( IFormFile file,[FromForm] string idImage)
+        public async Task<ActionResult> PutImage(IFormFile file, [FromForm] string idImage)
         {
+            //check data
             if (file is null || file.Length == 0)
             {
-                return Ok(new
-                {
-                    EC = 2,
-                    EM = file
-                });
+                return BadRequest(_response.GenerateStrategyResponseDto("userError"));
             }
-            if (!Guid.TryParse(idImage, out var guidId))
+            if (!Guid.TryParse(idImage, out var guidIdImage))
             {
-                throw new FEException("Guid Wrong");
+                return BadRequest(_response.GenerateStrategyResponseDto("userError"));
             }
+
+            //get idUser
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!Guid.TryParse(userId, out Guid userIdGuid))
+                return BadRequest(_response.GenerateStrategyResponseDto("userError"));
 
             using var tempMemory = new MemoryStream();
             await file.CopyToAsync(tempMemory);
             var imageByte = tempMemory.ToArray();
 
-            var result = await imageServices.PutImage(guidId, imageByte);
-            if (result == 1)
-            {
-                return StatusCode(500, new
-                {
-                    EC = 1,
-                    EM = "ERROR FROM BE"
-                });
-            }
-            if (result == 2)
-            {
-                throw new FEException("Image is not exist");
-            }
-            return Ok(new
-            {
-                EC = 0,
-                EM = "Ok"
-            });
-
-
+            var resultPutImage = imageServices.UpdateImage(new BookImage() { Id = guidIdImage, Image= imageByte}, userId);
+            return Ok(resultPutImage);
         }
 
         [Authorize(Roles = "admin")]
@@ -114,35 +90,16 @@ namespace Backend.Controllers
 
             if (!Guid.TryParse(idImage, out var guidId))
             {
-                throw new FEException("Guid Wrong");
+                return BadRequest(_response.GenerateStrategyResponseDto("userError"));
             }
 
+            //get idUser
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!Guid.TryParse(userId, out Guid userIdGuid))
+                return BadRequest(_response.GenerateStrategyResponseDto("userError"));
 
-
-            var result = await imageServices.DelImage(guidId);
-            if (result == 1)
-            {
-                return StatusCode(500, new
-                {
-                    EC = 1,
-                    EM = "ERROR FROM BE"
-                });
-            }
-            if (result == 2)
-            {
-                return StatusCode(500, new
-                {
-                    EC = 1,
-                    EM = "ERROR FROM BE"
-                });
-            }
-            return Ok(new
-            {
-                EC = 0,
-                EM = "Ok"
-            });
-
-
+            imageServices.Delete(guidId, userId);
+            return Ok(_response.GenerateStrategyResponseDto("success"));
         }
     }
 }

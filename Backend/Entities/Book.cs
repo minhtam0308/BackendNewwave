@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Backend.Entities
+namespace BeNewNewave.Entities
 {
     public class Book : BaseEntity
     {
@@ -15,7 +15,7 @@ namespace Backend.Entities
 
         public string? UrlBook { get; set; }     
 
-        public List<CartBook>? CartBooks { get; set; } = new List<CartBook>();
-        public List<DetailBorrow>? DetailBorrows { get; set; } = new List<DetailBorrow>();
+        public List<CartBook>? CartBooks { get; set; }
+        public List<DetailBorrow>? DetailBorrows { get; set; }
     }
 }

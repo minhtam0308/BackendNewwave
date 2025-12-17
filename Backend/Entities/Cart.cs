@@ -1,9 +1,9 @@
-﻿namespace Backend.Entities
+﻿namespace BeNewNewave.Entities
 {
     public class Cart : BaseEntity
     {
         public Guid IdUser { get; set; }
         public User? User { get; set; }
-        public List<CartBook> CartBooks { get; set; } = new List<CartBook>();
+        public List<CartBook>? CartBooks { get; set; } 
     }
 }

@@ -1,44 +1,51 @@
-
-//using Backend.Extensions;
-using Backend.Exceptions;
-using Backend.Extensions;
-using Backend.Mapper;
-using Backend.Middlware;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Scalar.AspNetCore;
+using BeNewNewave.Exceptions;
+using BeNewNewave.Configs;
 using Serilog;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
 
-var services = builder.Services;
-services.ServicesConfigs(builder.Configuration);
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddCorsConfig();
+builder.Services.AddAuthenticationConfig(builder.Configuration);
+builder.Services.DbConfig(builder.Configuration);
+builder.Services.AddScopedConfig();
+
+
+var app = builder.Build();
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
-    .WriteTo.Console()
     .WriteTo.File("logs/myapp.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.Console()
     .CreateLogger();
-var app = builder.Build();
 
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
-//app.UseAuthMiddleware();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+app.UseCors("AllowWebHost");
+
 app.UseHttpsRedirection();
 
-app.UseCors("AllowAll");
-
 app.UseAuthorization();
-
-app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapControllers();
 
