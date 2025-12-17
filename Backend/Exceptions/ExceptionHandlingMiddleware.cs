@@ -14,7 +14,7 @@ namespace BeNewNewave.Exceptions
         private readonly RequestDelegate _next;
         private ResponseDto _response = new ResponseDto();
 
-        public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+        public ExceptionHandlingMiddleware(RequestDelegate next)
         {
             _next = next;
         }
@@ -37,7 +37,7 @@ namespace BeNewNewave.Exceptions
         {
             context.Response.ContentType = "application/json";
 
-            _response.SetResponseDtoStrategy(new ServerError());
+            _response.SetResponseDtoStrategy(new SystemError());
 
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 

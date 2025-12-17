@@ -5,7 +5,7 @@ namespace BeNewNewave.DTOs
 {
     public class ResponseDto
     {
-        private IResponseDtoStrategy _responseDto = new ServerError();
+        private IResponseDtoStrategy _responseDto = new SystemError();
         public int errorCode { get; set; } = 0;
         public string errorMessage { get; set; } = "success";
         public object data { get; set; } = new();
@@ -35,7 +35,7 @@ namespace BeNewNewave.DTOs
                     SetResponseDtoStrategy(new UserError());
                     return GetResponseDto();
                 case "serverError":
-                    SetResponseDtoStrategy(new ServerError());
+                    SetResponseDtoStrategy(new SystemError());
                     return GetResponseDto();
                 default:
                     SetResponseDtoStrategy(new Success());
