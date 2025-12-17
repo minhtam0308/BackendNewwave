@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Backend.Common;
 using BeNewNewave.Data;
 using BeNewNewave.DTOs;
 using BeNewNewave.Entities;
@@ -32,11 +33,11 @@ namespace Backend.Sevices
         {
 
             if (!Guid.TryParse(request.IdBook, out Guid idBook))
-                return _response.GenerateStrategyResponseDto("userError");
+                return _response.GenerateStrategyResponseDto(ErrorCode.InvalidInput);
 
             var bookInfor = _bookRepository.GetById(idBook);
             if (bookInfor == null || bookInfor.AvailableCopies < request.Quantity)
-                return _response.GenerateStrategyResponseDto("userError");
+                return _response.GenerateStrategyResponseDto(ErrorCode.InvalidInput);
 
             var checkCart = _cartRepository.GetByIdUser(idUser);
             if (checkCart == null)
@@ -65,7 +66,7 @@ namespace Backend.Sevices
                 _cartBookRepository.SaveChanges();
             }
 
-            return _response.GenerateStrategyResponseDto("success");
+            return _response.GenerateStrategyResponseDto(ErrorCode.Success);
         }
         public ResponseDto GetAllCart(Guid idUser)
         {

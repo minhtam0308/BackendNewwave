@@ -1,7 +1,9 @@
-﻿using BeNewNewave.Data;
-using BeNewNewave.Entities;
+﻿using Backend.Common;
+using BeNewNewave.Data;
 using BeNewNewave.DTOs;
+using BeNewNewave.Entities;
 using BeNewNewave.Interface.IRepositories;
+using BeNewNewave.Interface.IServices;
 using BeNewNewave.Strategy.ResponseDtoStrategy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -10,11 +12,10 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using BeNewNewave.Interface.IServices;
 
 namespace BeNewNewave.Sevices
 {
-    public class AuthService(AppDbContext context, IConfiguration configuration, IAuthRepository userRepo) : IAuthService
+    public class AuthService(AppDbContext context, IConfiguration configuration, IAuthRepository authRepo) : IAuthService
     {
         private ResponseDto _response = new ResponseDto();
 
@@ -23,10 +24,9 @@ namespace BeNewNewave.Sevices
         {
             if (!IsValidPassword(request.Password) || !IsValidEmail(request.Email))
             {
-                _response.SetResponseDtoStrategy(new UserError());
-                return _response.GetResponseDto();
+                return _response.GenerateStrategyResponseDto(ErrorCode.InvalidInput);
             }
-            var user = userRepo.FindUserByEmail(request.Email);
+            var user = authRepo.FindUserByEmail(request.Email);
             if (user is null)
             {
                 _response.SetResponseDtoStrategy(new UserError("User is not exist"));
@@ -65,9 +65,9 @@ namespace BeNewNewave.Sevices
         {
             if(!IsValidPassword(request.Password) || !IsValidEmail(request.Email))
             {
-                return _response.GenerateStrategyResponseDto("userError");
+                return _response.GenerateStrategyResponseDto(ErrorCode.InvalidInput);
             }
-            if (userRepo.IsEmailExist(request.Email)) {
+            if (authRepo.IsEmailExist(request.Email)) {
                 _response.SetResponseDtoStrategy(new UserError("Email was exist!"));
                 return _response.GetResponseDto();
             }
@@ -76,9 +76,9 @@ namespace BeNewNewave.Sevices
             user.Email = request.Email;
             user.PasswordHash = passwordHard;
             user.Name = request.Name;
-            userRepo.Insert(user);
-            userRepo.SaveChanges();
-            return _response.GenerateStrategyResponseDto("success");
+            authRepo.Insert(user);
+            authRepo.SaveChanges();
+            return _response.GenerateStrategyResponseDto(ErrorCode.Success);
         }
 
         bool IsValidPassword(string password)
@@ -138,10 +138,10 @@ namespace BeNewNewave.Sevices
 
         public async Task<ResponseDto> RefreshTokenAsyn(RefreshTokenRequest request)
         {
-            var user = userRepo.GetById(request.UserId);
+            var user = authRepo.GetById(request.UserId);
             if (user is null || user.RefreshTokeExpiryTime < DateTime.UtcNow || user.RefreshToken != request.RefreshToken)
             {
-                return _response.GenerateStrategyResponseDto("userError");
+                return _response.GenerateStrategyResponseDto(ErrorCode.InvalidInput);
             }
             _response.SetResponseDtoStrategy(new Success("Refresh success", await CreateTokenResponAsync(user)));
             return _response.GetResponseDto();

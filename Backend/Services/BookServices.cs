@@ -1,6 +1,7 @@
 ﻿
 using AutoMapper;
 using Azure.Core;
+using Backend.Common;
 using BeNewNewave.Data;
 using BeNewNewave.DTOs;
 using BeNewNewave.Entities;
@@ -89,7 +90,7 @@ namespace Backend.Sevices
             Book bookNew = _mapper.Map<Book>(request);
             _bookRepository.Insert(bookNew, idUser);
             _bookRepository.SaveChanges();
-            return _response.GenerateStrategyResponseDto("success");
+            return _response.GenerateStrategyResponseDto(ErrorCode.Success);
 
         }
 
@@ -99,7 +100,7 @@ namespace Backend.Sevices
             var bookEdit = _bookRepository.GetById(request.Id);
             if (bookEdit == null)
             {
-                return _response.GenerateStrategyResponseDto("userError");
+                return _response.GenerateStrategyResponseDto(ErrorCode.InvalidInput);
             }
             bookEdit.Title = request.Title;
             bookEdit.IdAuthor = request.IdAuthor;
@@ -109,7 +110,7 @@ namespace Backend.Sevices
             bookEdit.UrlBook = request.UrlBook;
             bookEdit.UpdatedBy = idUser;
             _bookRepository.SaveChanges();
-            return _response.GenerateStrategyResponseDto("success");
+            return _response.GenerateStrategyResponseDto(ErrorCode.Success);
 
 
         }

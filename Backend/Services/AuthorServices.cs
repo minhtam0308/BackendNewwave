@@ -2,6 +2,7 @@
 
 using AutoMapper;
 using Azure;
+using Backend.Common;
 using BeNewNewave.Data;
 using BeNewNewave.DTOs;
 using BeNewNewave.Entities;
@@ -32,23 +33,23 @@ namespace Backend.Sevices
             var authorEdit = _authorRepository.GetById(author.Id);
             if (authorEdit == null)
             {
-                return _responseDto.GenerateStrategyResponseDto("userError");
+                return _responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput);
             }
             //update author
             authorEdit.NameAuthor = author.NameAuthor;
             _authorRepository.Update(authorEdit, idUser);
             _authorRepository.SaveChanges();
-            return _responseDto.GenerateStrategyResponseDto("success");
+            return _responseDto.GenerateStrategyResponseDto(ErrorCode.Success);
         }
 
         public ResponseDto DeleteAuthor(Guid idEntity, string idUser)
         {
             var oldAuthor = _authorRepository.GetById(idEntity);
             if (oldAuthor == null)
-                return _responseDto.GenerateStrategyResponseDto("userError");
+                return _responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput);
             _authorRepository.Delete(idEntity, idUser);
             _authorRepository.SaveChanges();
-            return _responseDto.GenerateStrategyResponseDto("success");
+            return _responseDto.GenerateStrategyResponseDto(ErrorCode.Success);
         }
 
 

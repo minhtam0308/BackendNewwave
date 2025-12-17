@@ -1,4 +1,5 @@
-﻿using BeNewNewave.DTOs;
+﻿using Backend.Common;
+using BeNewNewave.DTOs;
 using BeNewNewave.Interface.Strategy;
 
 namespace BeNewNewave.Strategy.ResponseDtoStrategy
@@ -15,7 +16,7 @@ namespace BeNewNewave.Strategy.ResponseDtoStrategy
         {
             return new ResponseDto()
             {
-                errorCode = 2,
+                errorCode = ErrorCode.InvalidInput,
                 errorMessage = _messageUserError,
             };
         }

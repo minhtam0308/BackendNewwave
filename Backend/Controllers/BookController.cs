@@ -1,4 +1,5 @@
 ﻿
+using Backend.Common;
 using BeNewNewave.DTOs;
 using BeNewNewave.Entities;
 using BeNewNewave.Interface.IServices;
@@ -38,12 +39,12 @@ namespace BeNewNewave.Controllers
         {
             if (request is null || request.TotalCopies == 0 || request.Title == "")
             {
-                return BadRequest(_responseDto.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
             }
             //get idUser
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
             if (!Guid.TryParse(userId, out Guid userIdGuid))
-                return BadRequest(_responseDto.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
             //create book
             var resultCreate = bookServices.PostCreateBook(request, userId);
             return Ok(resultCreate);
@@ -56,7 +57,7 @@ namespace BeNewNewave.Controllers
             //get idUser
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
             if (!Guid.TryParse(userId, out Guid userIdGuid))
-                return BadRequest(_responseDto.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
             var resultPutBook = bookServices.PutBook(request, userId);
             return Ok(resultPutBook);
         }
@@ -67,15 +68,15 @@ namespace BeNewNewave.Controllers
         {
             if (!Guid.TryParse(idBook, out var guidId))
             {
-                return BadRequest(_responseDto.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
             }
 
             //get idUser
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
             if (!Guid.TryParse(userId, out Guid userIdGuid))
-                return BadRequest(_responseDto.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
             bookServices.Delete(guidId, userId);
-            return Ok(_responseDto.GenerateStrategyResponseDto("success"));
+            return Ok(_responseDto.GenerateStrategyResponseDto(ErrorCode.Success));
 
         }
 

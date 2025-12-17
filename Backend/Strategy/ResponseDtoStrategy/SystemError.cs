@@ -1,5 +1,7 @@
-﻿using BeNewNewave.DTOs;
+﻿using Backend.Common;
+using BeNewNewave.DTOs;
 using BeNewNewave.Interface.Strategy;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace BeNewNewave.Strategy.ResponseDtoStrategy
 {
@@ -15,7 +17,7 @@ namespace BeNewNewave.Strategy.ResponseDtoStrategy
         {
             return new ResponseDto()
             {
-                errorCode = 1,
+                errorCode = ErrorCode.InternalServerError,
                 errorMessage = _messageServerError,
             };
         }

@@ -1,4 +1,5 @@
 ﻿
+using Backend.Common;
 using BeNewNewave.DTOs;
 using BeNewNewave.Entities;
 using BeNewNewave.Interface.Services;
@@ -22,12 +23,12 @@ namespace BeNewNewave.Controllers
             //check data
             if (file is null || file.Length == 0)
             {
-                return BadRequest(_response.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_response.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
             }
             //get iduser
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!Guid.TryParse(userId, out Guid userIdGuid))
-                return BadRequest(_response.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_response.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
             //convert file to byte
             using var tempMemory = new MemoryStream();
             await file.CopyToAsync(tempMemory);
@@ -63,17 +64,17 @@ namespace BeNewNewave.Controllers
             //check data
             if (file is null || file.Length == 0)
             {
-                return BadRequest(_response.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_response.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
             }
             if (!Guid.TryParse(idImage, out var guidIdImage))
             {
-                return BadRequest(_response.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_response.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
             }
 
             //get idUser
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!Guid.TryParse(userId, out Guid userIdGuid))
-                return BadRequest(_response.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_response.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
 
             using var tempMemory = new MemoryStream();
             await file.CopyToAsync(tempMemory);
@@ -90,16 +91,16 @@ namespace BeNewNewave.Controllers
 
             if (!Guid.TryParse(idImage, out var guidId))
             {
-                return BadRequest(_response.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_response.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
             }
 
             //get idUser
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!Guid.TryParse(userId, out Guid userIdGuid))
-                return BadRequest(_response.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_response.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
 
             imageServices.Delete(guidId, userId);
-            return Ok(_response.GenerateStrategyResponseDto("success"));
+            return Ok(_response.GenerateStrategyResponseDto(ErrorCode.Success));
         }
     }
 }

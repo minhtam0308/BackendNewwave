@@ -1,4 +1,5 @@
 ﻿
+using Backend.Common;
 using BeNewNewave.DTOs;
 using BeNewNewave.Entities;
 using BeNewNewave.Interface.IRepo;
@@ -25,7 +26,7 @@ namespace BeNewNewave.Sevices
             var user = _userRepository.GetById(request.Id);
             if (user == null)
             {
-                return _response.GenerateStrategyResponseDto("userError");
+                return _response.GenerateStrategyResponseDto(ErrorCode.InvalidInput);
             }
             user.Name = request.Name;
             user.Location = request.Location;
@@ -36,7 +37,7 @@ namespace BeNewNewave.Sevices
             user.UrlUserImage = request.UrlUserImage;
 
             _userRepository.SaveChanges();
-            return _response.GenerateStrategyResponseDto("success");
+            return _response.GenerateStrategyResponseDto(ErrorCode.Success);
         }
 
     }

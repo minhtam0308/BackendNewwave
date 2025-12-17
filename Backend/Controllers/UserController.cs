@@ -1,4 +1,5 @@
 ﻿
+using Backend.Common;
 using BeNewNewave.DTOs;
 using BeNewNewave.Interface.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +21,7 @@ namespace BeNewNewave.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!Guid.TryParse(userId, out Guid userIdReuslt))
-                return _response.GenerateStrategyResponseDto("success");
+                return _response.GenerateStrategyResponseDto(ErrorCode.Success);
             request.Id = userIdReuslt;
             var resultChange = userService.PutChangeUser(request);
             return Ok(resultChange);

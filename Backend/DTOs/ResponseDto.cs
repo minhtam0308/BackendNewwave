@@ -1,4 +1,6 @@
-﻿using BeNewNewave.Interface.Strategy;
+﻿using Backend.Common;
+using Backend.Strategy.ResponseDtoStrategy;
+using BeNewNewave.Interface.Strategy;
 using BeNewNewave.Strategy.ResponseDtoStrategy;
 
 namespace BeNewNewave.DTOs
@@ -6,7 +8,7 @@ namespace BeNewNewave.DTOs
     public class ResponseDto
     {
         private IResponseDtoStrategy _responseDto = new SystemError();
-        public int errorCode { get; set; } = 0;
+        public ErrorCode errorCode { get; set; } = ErrorCode.Success;
         public string errorMessage { get; set; } = "success";
         public object data { get; set; } = new();
 
@@ -27,18 +29,21 @@ namespace BeNewNewave.DTOs
             return _responseDto.GetResponse();
         }
 
-        public ResponseDto GenerateStrategyResponseDto(string result)
+        public ResponseDto GenerateStrategyResponseDto(ErrorCode errorCode)
         {
-            switch (result)
+            switch (errorCode)
             {
-                case "userError":
+                case ErrorCode.InvalidInput:
                     SetResponseDtoStrategy(new UserError());
                     return GetResponseDto();
-                case "serverError":
+                case ErrorCode.InternalServerError:
                     SetResponseDtoStrategy(new SystemError());
                     return GetResponseDto();
-                default:
+                case ErrorCode.Success:
                     SetResponseDtoStrategy(new Success());
+                    return GetResponseDto();
+                default:
+                    SetResponseDtoStrategy(new Unknow());
                     return GetResponseDto();
             }
         }

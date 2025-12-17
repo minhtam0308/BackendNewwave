@@ -1,5 +1,6 @@
 ﻿
 using Azure;
+using Backend.Common;
 using BeNewNewave.DTOs;
 using BeNewNewave.Entities;
 using BeNewNewave.Interface.IServices;
@@ -24,15 +25,15 @@ namespace BeNewNewave.Controllers
         {
             if (nameAuthor == null || nameAuthor == "")
             {
-                return BadRequest(_responseDto.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
             }
             var newAuthor = new Author() { NameAuthor = nameAuthor };
             //get id user
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!Guid.TryParse(userId, out Guid userIdGuid))
-                return BadRequest(_responseDto.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
             authorServices.Create(newAuthor, userId);
-            return Ok(_responseDto.GenerateStrategyResponseDto("success"));
+            return Ok(_responseDto.GenerateStrategyResponseDto(ErrorCode.Success));
         }
 
 
@@ -52,11 +53,11 @@ namespace BeNewNewave.Controllers
         {
             //check author null
             if (author is null || author.NameAuthor == "")
-                return BadRequest(_responseDto.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!Guid.TryParse(userId, out Guid userIdGuid))
-                return BadRequest(_responseDto.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
             return authorServices.EditAuthor(author, userId);
 
         }

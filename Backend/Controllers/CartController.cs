@@ -1,4 +1,5 @@
 ﻿
+using Backend.Common;
 using BeNewNewave.DTOs;
 using BeNewNewave.Interface.IServices;
 using Microsoft.AspNetCore.Authorization;
@@ -19,14 +20,14 @@ namespace BeNewNewave.Controllers
         {
 
             if (request.IdBook is null)
-                return BadRequest(_responseDto.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
 
             if (request.Quantity <= 0)
-                return BadRequest(_responseDto.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!Guid.TryParse(userId, out Guid userIdReuslt))
-                return BadRequest(_responseDto.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
 
             var resultBorrow = cartServices.PostAddCart(request, userIdReuslt);
 
@@ -41,7 +42,7 @@ namespace BeNewNewave.Controllers
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!Guid.TryParse(userId, out Guid userIdReuslt))
-                return BadRequest(_responseDto.GenerateStrategyResponseDto("userError"));
+                return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
 
             var resultGetCart = cartServices.GetAllCart(userIdReuslt);
 

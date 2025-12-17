@@ -1,4 +1,5 @@
 ﻿
+using Backend.Common;
 using BeNewNewave.DTOs;
 using BeNewNewave.Entities;
 using BeNewNewave.Interface.IRepositories;
@@ -51,13 +52,13 @@ namespace Backend.Sevices
             var editImage = _imageRepository.GetById(entity.Id);
             if (editImage == null)
             {
-                return _response.GenerateStrategyResponseDto("userError");
+                return _response.GenerateStrategyResponseDto(ErrorCode.InvalidInput);
             }
             editImage.Image = entity.Image;
             editImage.UpdatedAt = DateTime.UtcNow;
             editImage.UpdatedBy = idUser;
             _imageRepository.SaveChanges();
-            return _response.GenerateStrategyResponseDto("success");
+            return _response.GenerateStrategyResponseDto(ErrorCode.Success);
 
         }
 
