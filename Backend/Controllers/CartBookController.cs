@@ -1,4 +1,5 @@
 ﻿using Backend.Common;
+using Backend.DTOs;
 using Backend.Interface.IServices;
 using Backend.Sevices;
 using BeNewNewave.DTOs;
@@ -29,11 +30,35 @@ namespace Backend.Controllers
             if (!Guid.TryParse(userId, out Guid userIdReuslt))
                 return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
 
-            var resultBorrow = cartBookServices.DeleteCartBook(idCartGuid, idBookGuid, userId);
-            if (resultBorrow.errorCode != ErrorCode.Success)
-                return BadRequest(resultBorrow);
+            var resultDeteleCartBook = cartBookServices.DeleteCartBook(idCartGuid, idBookGuid, userId);
+            if (resultDeteleCartBook.errorCode != ErrorCode.Success)
+                return BadRequest(resultDeteleCartBook);
 
-            return Ok(resultBorrow);
+            return Ok(resultDeteleCartBook);
+        }
+
+        [Authorize(Roles = "user, admin")]
+        [HttpPut("putChangeQuantityCartBook")]
+        public ActionResult PutChangeQuantityCartBook(ChangeQuantityCartBookRequest request)
+        {
+            if(request == null)
+                return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
+
+            if (!Guid.TryParse(request.IdCart, out Guid idCartGuid))
+                return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
+
+            if (!Guid.TryParse(request.IdBook, out Guid idBookGuid))
+                return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!Guid.TryParse(userId, out Guid userIdReuslt))
+                return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
+
+            var resultChangQuantity = cartBookServices.PutQuantityCartBook(idCartGuid, idBookGuid, request.Quantity, userId);
+            if (resultChangQuantity.errorCode != ErrorCode.Success)
+                return BadRequest(resultChangQuantity);
+
+            return Ok(resultChangQuantity);
         }
 
     }
