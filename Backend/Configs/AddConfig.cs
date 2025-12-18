@@ -9,6 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Backend.Sevices;
 using BeNewNewave.Interface.Services;
+using Backend.Services;
+using Backend.Interface.IServices;
 namespace BeNewNewave.Configs
 {
     public static class AddConfig
@@ -81,6 +83,7 @@ namespace BeNewNewave.Configs
             services.AddScoped<ICartRepository, CartRepo>();
 
             services.AddScoped<ICartBookRepository, CartBookRepo>();
+            services.AddScoped<ICartBookServices, CartBookServices>();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepo>();
