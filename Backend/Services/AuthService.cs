@@ -15,7 +15,7 @@ using System.Text.RegularExpressions;
 
 namespace BeNewNewave.Sevices
 {
-    public class AuthService(AppDbContext context, IConfiguration configuration, IAuthRepository authRepo) : IAuthService
+    public class AuthService(IUserRepository userRepository,IConfiguration configuration, IAuthRepository authRepo) : IAuthService
     {
         private ResponseDto _response = new ResponseDto();
 
@@ -83,6 +83,8 @@ namespace BeNewNewave.Sevices
 
         bool IsValidPassword(string password)
         {
+            if (string.IsNullOrWhiteSpace(password))
+                return false;
             var pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$";
             return Regex.IsMatch(password, pattern);
         }
@@ -131,7 +133,7 @@ namespace BeNewNewave.Sevices
             var refreshToken = GenerateRefreshToken();
             user.RefreshToken = refreshToken;
             user.RefreshTokeExpiryTime = DateTime.UtcNow.AddDays(configuration.GetValue<int>("appsetting:timeResfreshTokenExpire"));
-            await context.SaveChangesAsync();
+            userRepository.SaveChanges();
             return refreshToken;
         }
 

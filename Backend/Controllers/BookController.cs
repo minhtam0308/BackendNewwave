@@ -87,7 +87,8 @@ namespace BeNewNewave.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult<ResponseDto> AddBookByExcel(IFormFile file)
         {
-
+            if(file == null)
+                return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
             ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
 
             using var stream = new MemoryStream();
@@ -108,7 +109,6 @@ namespace BeNewNewave.Controllers
 
                 if (string.IsNullOrEmpty(title))
                     continue; 
-
                 var book = new BookRequest
                 {
                     Title = title,

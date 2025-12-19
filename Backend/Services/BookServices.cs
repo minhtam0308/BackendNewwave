@@ -69,7 +69,7 @@ namespace Backend.Sevices
 
             if ((paginationRequest.PageNumber - 1) * paginationRequest.PageSize > totalCount)
             {
-                return null;
+                return _response.GenerateStrategyResponseDto(ErrorCode.InvalidInput);
             }
             var items = await _bookRepository.GetBookPaginate(paginationRequest);
 
