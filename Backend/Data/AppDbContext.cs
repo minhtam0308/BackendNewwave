@@ -44,11 +44,6 @@ namespace Backend.Data
                 .HasForeignKey(mt => mt.IdUser)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Borrow>()
-                .HasOne(mt => mt.Admin)
-                .WithMany(u => u.Admins)
-                .HasForeignKey(mt => mt.IdAdmin)
-                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<CartBook>()
                 .HasOne(mt => mt.Cart)

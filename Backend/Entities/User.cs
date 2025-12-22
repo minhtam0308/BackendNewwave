@@ -14,9 +14,7 @@
         public string? RefreshToken {  get; set; }
         public string? UrlUserImage { get; set; } = "258d5e1a-ff57-4092-2a5d-08de2e43c05d";
         public DateTime? RefreshTokeExpiryTime { get; set; }
-
         public List<Borrow> Users { get; set; } = new();
-        public List<Borrow> Admins { get; set; } = new();
         public Cart? Cart { get; set; }
     }
 }
