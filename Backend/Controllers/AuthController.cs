@@ -1,7 +1,6 @@
 ﻿
 using Backend.Common;
-using BeNewNewave.DTOs;
-using BeNewNewave.DTOs;
+using Backend.DTOs;
 using BeNewNewave.Interface.IServices;
 using BeNewNewave.Strategy.ResponseDtoStrategy;
 using Microsoft.AspNetCore.Mvc;

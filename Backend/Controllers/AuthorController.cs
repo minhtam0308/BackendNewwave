@@ -1,7 +1,7 @@
 ﻿
 using Azure;
 using Backend.Common;
-using BeNewNewave.DTOs;
+using Backend.DTOs;
 using BeNewNewave.Entities;
 using BeNewNewave.Interface.IServices;
 using BeNewNewave.Strategy.ResponseDtoStrategy;

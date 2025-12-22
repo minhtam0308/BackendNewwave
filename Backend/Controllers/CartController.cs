@@ -1,6 +1,6 @@
 ﻿
 using Backend.Common;
-using BeNewNewave.DTOs;
+using Backend.DTOs;
 using BeNewNewave.Interface.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

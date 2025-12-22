@@ -1,6 +1,6 @@
 ﻿using Backend.Common;
 using BeNewNewave.Data;
-using BeNewNewave.DTOs;
+using Backend.DTOs;
 using BeNewNewave.Entities;
 using BeNewNewave.Interface.IRepositories;
 using BeNewNewave.Interface.IServices;

@@ -3,7 +3,7 @@ using Backend.Strategy.ResponseDtoStrategy;
 using BeNewNewave.Interface.Strategy;
 using BeNewNewave.Strategy.ResponseDtoStrategy;
 
-namespace BeNewNewave.DTOs
+namespace Backend.DTOs
 {
     public class ResponseDto
     {

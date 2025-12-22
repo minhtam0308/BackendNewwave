@@ -1,5 +1,5 @@
 ﻿
-using BeNewNewave.DTOs;
+using Backend.DTOs;
 
 namespace BeNewNewave.Interface.IServices
 {

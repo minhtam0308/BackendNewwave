@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BeNewNewave.Data;
-using BeNewNewave.DTOs;
+using Backend.DTOs;
 using BeNewNewave.Entities;
 using BeNewNewave.Interface.IRepositories;
 using BeNewNewave.Strategy.ResponseDtoStrategy;
@@ -20,7 +20,10 @@ namespace BeNewNewave.Repositories
 
         public List<BookResponse>? GetAllBook()
         {
-            List<Book> listBook = _dbSet.Include(b => b.Author).ToList();   
+            List<Book> listBook = _dbSet
+                .Include(b => b.Author)
+                .OrderByDescending(x=> x.CreatedAt)
+                .ToList();   
             List<BookResponse> lstResponse = _mapper.Map<List<BookResponse>>(listBook);
             return lstResponse;
         }
@@ -37,7 +40,7 @@ namespace BeNewNewave.Repositories
 
             var items = await  _dbSet
                 .Include(b => b.Author)
-                .OrderBy(x => x.Id)
+                .OrderByDescending(x => x.CreatedAt)
                 .Skip((paginationRequest.PageNumber - 1) * paginationRequest.PageSize)
                 .Take(paginationRequest.PageSize)
                 .ToListAsync();

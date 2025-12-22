@@ -11,6 +11,8 @@ using Backend.Sevices;
 using BeNewNewave.Interface.Services;
 using Backend.Services;
 using Backend.Interface.IServices;
+using Backend.Interface.IRepositories;
+using Backend.Repositories;
 namespace BeNewNewave.Configs
 {
     public static class AddConfig
@@ -87,6 +89,12 @@ namespace BeNewNewave.Configs
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepo>();
+
+            services.AddScoped<IBorrowServices, BorrowServices>();
+            services.AddScoped<IBorrowRepository, BorrowRepo>();
+
+            services.AddScoped<IDetailBorrowRepository, DetailBorrowRepo>();
+            services.AddScoped<IDetailBorrowServices, DetailBorrowServices>();
 
             services.AddAutoMapper(cfg =>
             {

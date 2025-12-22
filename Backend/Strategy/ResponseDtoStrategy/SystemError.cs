@@ -1,5 +1,5 @@
 ﻿using Backend.Common;
-using BeNewNewave.DTOs;
+using Backend.DTOs;
 using BeNewNewave.Interface.Strategy;
 using Microsoft.AspNetCore.Diagnostics;
 

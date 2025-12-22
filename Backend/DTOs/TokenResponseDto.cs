@@ -1,6 +1,6 @@
-﻿using BeNewNewave.DTOs;
+﻿using Backend.DTOs;
 
-namespace BeNewNewave.DTOs
+namespace Backend.DTOs
 {
     public class TokenResponseDto
     {

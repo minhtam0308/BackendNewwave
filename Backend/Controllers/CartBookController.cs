@@ -1,8 +1,6 @@
 ﻿using Backend.Common;
 using Backend.DTOs;
 using Backend.Interface.IServices;
-using Backend.Sevices;
-using BeNewNewave.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

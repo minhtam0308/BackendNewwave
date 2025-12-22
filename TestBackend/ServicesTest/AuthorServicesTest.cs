@@ -1,7 +1,7 @@
 using AutoMapper;
 using Backend.Common;
 using Backend.Sevices;
-using BeNewNewave.DTOs;
+using Backend.DTOs;
 using BeNewNewave.Entities;
 using BeNewNewave.Interface.IRepositories;
 using BeNewNewave.Interface.IServices;

@@ -1,4 +1,4 @@
-﻿using BeNewNewave.DTOs;
+﻿using Backend.DTOs;
 using BeNewNewave.Entities;
 
 namespace BeNewNewave.Interface.IServices

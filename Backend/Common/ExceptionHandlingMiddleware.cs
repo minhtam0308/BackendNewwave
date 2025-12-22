@@ -1,5 +1,5 @@
 ﻿
-using BeNewNewave.DTOs;
+using Backend.DTOs;
 using BeNewNewave.Strategy.ResponseDtoStrategy;
 using Serilog;
 using System.Net;

@@ -1,5 +1,5 @@
 ﻿using Backend.Common;
-using BeNewNewave.DTOs;
+using Backend.DTOs;
 using BeNewNewave.Interface.Strategy;
 
 namespace Backend.Strategy.ResponseDtoStrategy

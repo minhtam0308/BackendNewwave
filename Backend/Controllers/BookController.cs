@@ -1,7 +1,7 @@
 ﻿
 using Azure.Core;
 using Backend.Common;
-using BeNewNewave.DTOs;
+using Backend.DTOs;
 using BeNewNewave.Entities;
 using BeNewNewave.Interface.IServices;
 using BeNewNewave.Strategy.ResponseDtoStrategy;
@@ -99,6 +99,15 @@ namespace BeNewNewave.Controllers
 
             int rowCount = worksheet.Dimension.Rows;
 
+            if (worksheet.Cells[1, 1].Text?.Trim() != "Title" ||
+                worksheet.Cells[1, 2].Text?.Trim() != "Description" ||
+                worksheet.Cells[1, 3].Text?.Trim() != "AuthorId" ||
+                worksheet.Cells[1, 4].Text?.Trim() != "TotalCopies" ||
+                worksheet.Cells[1, 5].Text?.Trim() != "UrlBook")
+            {
+                return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
+            }
+
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
             if (!Guid.TryParse(userId, out Guid userIdGuid))
                 return BadRequest(_responseDto.GenerateStrategyResponseDto(ErrorCode.InvalidInput));
@@ -122,6 +131,68 @@ namespace BeNewNewave.Controllers
 
             return _responseDto.GenerateStrategyResponseDto(ErrorCode.Success);
 
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpGet("export-excel")]
+        public IActionResult ExportBooksToExcel()
+        {
+            ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+
+            using var package = new ExcelPackage();
+            var worksheet = package.Workbook.Worksheets.Add("Books");
+
+            worksheet.Cells[1, 1].Value = "Title";
+            worksheet.Cells[1, 2].Value = "Description";
+            worksheet.Cells[1, 3].Value = "AuthorId";
+            worksheet.Cells[1, 4].Value = "TotalCopies";
+            worksheet.Cells[1, 5].Value = "UrlBook";
+
+            var books = bookServices.GetAll();
+
+            int row = 2;
+            foreach (var book in books)
+            {
+                worksheet.Cells[row, 1].Value = book.Title;
+                worksheet.Cells[row, 2].Value = book.Description;
+                worksheet.Cells[row, 3].Value = book.IdAuthor.ToString();
+                worksheet.Cells[row, 4].Value = book.TotalCopies;
+                worksheet.Cells[row, 5].Value = book.UrlBook;
+                row++;
+            }
+
+            worksheet.Cells.AutoFitColumns();
+
+            var fileBytes = package.GetAsByteArray();
+            return File(
+                fileBytes,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "Books.xlsx"
+            );
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpGet("export-template")]
+        public IActionResult ExportExcelTemplate()
+        {
+            ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+
+            using var package = new ExcelPackage();
+            var ws = package.Workbook.Worksheets.Add("Template");
+
+            ws.Cells[1, 1].Value = "Title";
+            ws.Cells[1, 2].Value = "Description";
+            ws.Cells[1, 3].Value = "AuthorId";
+            ws.Cells[1, 4].Value = "TotalCopies";
+            ws.Cells[1, 5].Value = "UrlBook";
+
+            ws.Cells.AutoFitColumns();
+
+            return File(
+                package.GetAsByteArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "BookTemplate.xlsx"
+            );
         }
 
     }

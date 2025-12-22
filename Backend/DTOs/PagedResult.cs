@@ -1,6 +1,6 @@
 ﻿
 
-namespace BeNewNewave.DTOs
+namespace Backend.DTOs
 {
     public class PagedResult
     {
