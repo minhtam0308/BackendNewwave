@@ -3,7 +3,6 @@
     public class Borrow : BaseEntity
     {
         public List<DetailBorrow> DetailBorrow { get; set; } = new();
-        public Guid? IdAdmin { get; set; }
         public Guid IdUser { get; set; }
         public User? User { get; set; }
         public required DateTime ExpiresBorrow { get; set; }
